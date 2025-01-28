@@ -1,0 +1,14 @@
+resources:
+  clusters:
+    x_cluster:
+      cluster_name: "POC Cluster"
+      num_workers: 2
+      node_type_id: "Standard_DS3_v2"
+      autotermination_minutes: 10
+      autoscale:
+        min_workers: 1
+        max_workers: 2
+      spark_version: "15.4.x-scala2.12"
+      spark_conf:
+        "spark.executor.memory": "2g"
+      data_security_mode: USER_ISOLATION

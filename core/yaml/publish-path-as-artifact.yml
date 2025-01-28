@@ -1,0 +1,21 @@
+parameters:
+- name: name
+  default: ''
+- name: displayName
+  default: ''
+- name: vmImage
+  default: ''
+- name: sourceFolder
+  default: ''
+- name: artifactName
+  default: ''
+
+jobs:
+- job: ${{ parameters.name }}
+  displayName: ${{ parameters.displayName }}
+  pool: 
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - publish: ${{ parameters.sourceFolder }}
+    displayName: 'Publish Artifact'
+    artifact: ${{ parameters.artifactName }}

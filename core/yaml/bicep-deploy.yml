@@ -1,0 +1,48 @@
+parameters:
+  - name: deploymentName
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: resourceGroupName
+    default: ""
+  - name: templatePath
+    default: ""
+  - name: deploymentParameters
+    default: ""
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: dependsOn
+    type: object
+    default: []
+  - name: displayName
+    default: ''
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{parameters.displayName}}
+    dependsOn: ${{ parameters.dependsOn }}
+    pool:
+      vmImage: "windows-latest"
+    variables:
+      - group: ${{ parameters.environment }}
+      - group: ${{ parameters.environmentVariableGroup }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureCLI@2
+              displayName: ${{parameters.displayName}}
+              inputs:
+                azureSubscription: "${{ parameters.serviceConnection }}"
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az --version
+                  az deployment group create \
+                  --name ${{ parameters.deploymentName }} \
+                  --resource-group "${{ parameters.resourceGroupName }}" \
+                  --template-file '${{ parameters.templatePath }}' \
+                  --parameters ${{ parameters.deploymentParameters }}

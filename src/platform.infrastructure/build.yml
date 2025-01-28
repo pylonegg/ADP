@@ -1,0 +1,19 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: environmentLowerCase
+    default: ""
+
+jobs:
+  - template: ../../core/yaml/publish-path-as-artifact.yml
+    parameters:
+      Name: "PublishBicep"
+      vmImage: "windows-latest"
+      sourceFolder: "core/bicep"
+      artifactName: "bicep"
