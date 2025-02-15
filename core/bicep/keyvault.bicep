@@ -3,15 +3,6 @@ param keyvault_name string
 
 param subnet_id string
 
-// @description('Data Factory Storage Account resource.')
-// param storageaccount_name string
-// @description('Connection String of the storage account resource.')
-// param storageaccount_connectionstring string
-// param storagebackup_name string
-// param backupstorage_connectionstring string
-
-
-
 
 // Key Vault Resource
 resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
@@ -48,17 +39,24 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
           value: '52.166.166.111/32'
         }
       ]
-      virtualNetworkRules: [
-        {
-          id: subnet_id
-          ignoreMissingVnetServiceEndpoint: true
-        }
-      ]
+    //  virtualNetworkRules: [
+    //    {
+    //      id: subnet_id
+    //      ignoreMissingVnetServiceEndpoint: true
+    //    }
+    //  ]
     }
   }
 }
 
 
+
+// @description('Data Factory Storage Account resource.')
+// param storageaccount_name string
+// @description('Connection String of the storage account resource.')
+// param storageaccount_connectionstring string
+// param storagebackup_name string
+// param backupstorage_connectionstring string
 
 
 

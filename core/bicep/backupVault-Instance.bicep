@@ -3,13 +3,13 @@ param storageAccountid string
 param storageAccountName string
 param resourceLocation string
 param backupPolicyid string
-param keyvault_name string
+param vault_name string
 
 var resourceType = 'Microsoft.Storage/storageAccounts'
 var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
 
 resource vault_resource 'Microsoft.DataProtection/BackupVaults@2023-05-01' existing = {
-  name: keyvault_name
+  name: vault_name
 }
 
 // Back Up Instance
