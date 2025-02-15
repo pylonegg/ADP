@@ -25,7 +25,6 @@ jobs:
   #      virtualNetwork_name='my_vnet'
   #      subnet_name='my_subnet'
 
-
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
       templatePath: "../bicep/keyvault.bicep"
@@ -39,7 +38,6 @@ jobs:
       deploymentParameters: 
         keyvault_name='$(keyvault_name)'
         subnet_id='$(subnet_id)'
-
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
@@ -55,7 +53,7 @@ jobs:
         storageaccount_name='$(storageAccount_name)'
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
-        container_names=['adf-pipeline-logs']
+        container_names='["adf-pipeline-logs"]'
         ctrl_lifecycleManagement=true
         isHnsEnabled=true
 
@@ -73,9 +71,8 @@ jobs:
         storageaccount_name='$(storageAccountBackup_name)'
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
-        container_names=['Archive']
+        container_names='["Archive"]'
         ctrl_lifecycleManagement=false
-
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
@@ -99,15 +96,6 @@ jobs:
         repositoryCollaborationBranch="develop"
         repositoryRootFolder="src/azure.datafactory"
 
-
-
-
-
-
-
-
-
-
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
 #      displayName: "Databricks Workspace Deployment"
@@ -121,8 +109,6 @@ jobs:
 #      deploymentParameters:
 #        databricksWorkspaceName="$(databricksWorkspace_name)"
 #        pricingTier="premium"
-#
-
 
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:

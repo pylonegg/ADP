@@ -15,6 +15,51 @@ param adfPrincleId string
 
 
 
+
+
+
+
+
+
+
+
+resource PrivateEndpoints 'Microsoft.Network/privateEndpoints@2023-05-01' = [for endpoint in privateEndpoints: {
+  name: endpoint.name
+  location: location
+  properties: {
+    subnet: {
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, endpoint.subnetName)
+    }
+    privateLinkServiceConnections: [
+      {
+        name: endpoint.privateLinkServiceConnectionName
+        properties: {
+          privateLinkServiceConnectionState:{
+            status: 'approved'
+          }
+          privateLinkServiceId: endpoint.privateLinkServiceId
+          groupIds: endpoint.groupIds
+          requestMessage: 'Auto-approved private endpoint connection'
+        }
+      }
+    ]
+  }
+}]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Private Endpoint Resource - blob
 resource Blob_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
   name: privateEndpointblob
