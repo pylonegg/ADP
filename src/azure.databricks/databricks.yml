@@ -1,4 +1,4 @@
-# This is a Databricks asset bundle definition for dbx_dab.
+# This is a Databricks asset bundle definition for dbx.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
   name: dbx
@@ -6,27 +6,36 @@ bundle:
 include:
   - resources/*.yml
 
+variables:
+  adls_name: 
+    default: ""
+  adls_spn_id:
+    default: ""
+  oauth:
+    default: ""
+
+permissions:
+  - level: CAN_MANAGE
+    group_name: "admins"
+  - level: CAN_MANAGE
+    group_name: "Ops Admins"
+
 targets:
   dev:
-    # The default target uses 'mode: development' to create a development copy.
-    # - Deployed resources get prefixed with '[dev my_user_name]'
-    # - Any job schedules and triggers are paused by default.
-    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
-    # mode: development
     default: true
     workspace:
-      host: https://adb-3041368288921862.2.azuredatabricks.net
-      root_path: /Workspace/Users/chi.adiukwu@outlook.com
+      host: https://adb-4988640280383775.15.azuredatabricks.net/
+      root_path: /Shared/dbx
+    variables:
+      adls_name: "daz1advdaiadls01"
+      adls_spn_id: "60245495-9fc5-44c2-ab1d-fa3fb5646955"
 
-#  prod:
-#    mode: production
-#    workspace:
-#      host: https://adb-4077427159948703.3.azuredatabricks.net
-#      # We explicitly specify /Workspace/Users/chi.adiukwu@outlook.com to make sure we only have a single copy.
-#      root_path: /Workspace/Users/chi.adiukwu@outlook.com/.bundle/${bundle.name}/${bundle.target}
-#    permissions:
-#      - user_name: chi.adiukwu@outlook.com
-#        level: CAN_MANAGE
-#    run_as:
-#      user_name: chi.adiukwu@outlook.com
-#
+
+#   prod:
+#     default: true
+#     workspace:
+#       host: https://adb-3230645119540684.4.azuredatabricks.net
+#       root_path: /Shared/dbx
+#     variables:
+#       adls_name: "daz1advdaiadls01"
+#       adls_spn_id: "60245495-9fc5-44c2-ab1d-fa3fb5646955"

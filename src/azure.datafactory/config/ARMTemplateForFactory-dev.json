@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "value": "d-az1-advdai-adf01"
+        },
+        "datalakelinkedService_properties_typeProperties_url": {
+            "value": "https://daz1advdaiadls01.dfs.core.windows.net/"
+        },
+        "keyvaultlinkedService_properties_typeProperties_baseUrl": {
+            "value": "https://d-az1-advdai-kv01.vault.azure.net"
+        },
+        "SFTPlinkedService_properties_typeProperties_host": {
+            "value": "bdouk.goanywhere.cloud"
+        },
+        "SFTPlinkedService_properties_typeProperties_userName": {
+            "value": "BDO_Advisory_DataAnalytics_DEV"
+        },
+        "storagelinkedService_properties_typeProperties_serviceEndpoint": {
+            "value": "https://daz1advdaibkstg01.blob.core.windows.net/"
+        },
+        "Advisory_Test_Trigger_properties_Task - Copy sFTP to ADLS_parameters_sftp_Directory": {
+            "value": "/Advisory_SFTP_Test_Engagement_Folder"
+        },
+        "Advisory_Test_Trigger_properties_Task - Copy sFTP to ADLS_parameters_adls_FileSystem": {
+            "value": "live-demo"
+        },
+        "Backup_Trigger_properties_pipeline_parameters_windowStart": {
+            "value": "@trigger().outputs.windowStartTime"
+        },
+        "Backup_Trigger_properties_pipeline_parameters_windowEnd": {
+            "value": "@trigger().outputs.windowEndTime"
+        }
+    }
+}

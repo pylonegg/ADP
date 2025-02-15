@@ -1,0 +1,12 @@
+parameters:
+  - name: deploymentName
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+
+jobs:
+- job: EmptyBuild
+  displayName: "Nothing to Build"
+  pool:
+    vmImage: "ubuntu-latest"
+  steps: []

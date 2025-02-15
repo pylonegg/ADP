@@ -1,27 +1,39 @@
-
-
+# ---------------------------------------------------------------
+# Author: Chi Adiukwu
+# Initial Creation: 28/01/2025 
+# LastUpdated: 29/01/2025
+# Description: Calls Powershell module/functions (Databricks)
+# ---------------------------------------------------------------
 
 param (
     [string]$DatabricksHost,
     [string]$DatabricksToken,
     [string]$Environment,
-    [string]$ClusterName
+    [string]$ClusterName,
+    [string]$KeyVaultName,
+    [string]$KeyVaultResourceID,
+    [string]$ADLS_SPN
 )
 
-Join-Path -Path $PSScriptRoot -ChildPath "../../core/powershell/DatabricksUtils.psm1" | Import-Module
+Join-Path -Path $PSScriptRoot -ChildPath "../../core/powershell/databricks-utils.psm1" | Import-Module
+
 # --------------------------------------------------------------------------------------------------
-# Create a function in Core/Powershell/DatabricksUtils.psm1 and call it here!
+# Create a function in core/powershell/databricks-utils.psm1 and call it here!
 # --------------------------------------------------------------------------------------------------
 
 Install-ConfigureCLI -DatabricksHost $DatabricksHost -DatabricksToken -$DatabricksToken
+
 #Assign-MetastoreToWorkspace -WorkspaceId "" -MetastoreId ""
+
 cd src/azure.databricks
+
 Deploy-DatabricksBundle -Environment $Environment
-# Install-ClusterLibraries -ClusterName $ClusterName
-Create-SecretScope -ScopeName "TestScope"`
- -BackendType "AZURE_KEYVAULT"`
- -KeyVaultUri "https://uksdev01akv.vault.azure.net/"`
- -ResourceID "/subscriptions/7ca63534-9872-46b6-8a96-a155c7f96e59/resourceGroups/uksdev01rg/providers/Microsoft.KeyVault/vaults/uksdev01akv"
- 
- # Create Databricks backed secret
- Add-OrUpdateSecret -
+
+# Add requirements.txt to 
+Install-ClusterLibraries -ClusterName $ClusterName -RequirementsFilePath "/Workspace/Shared/dbx/files/config/requirements.txt"
+
+# Create Keyvault backed Scope
+Add-AzureKeyVaultBackedScope -ScopeName "scope-advdai-$Environment" -KeyVaultName $KeyVaultName -ResourceID $KeyVaultResourceID
+
+# Add databricks backed scope and secrets
+Add-OrUpdateSecret -ScopeName "BlobStorage" -KeyName "ADLS_SPN" -KeyValue $ADLS_SPN

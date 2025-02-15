@@ -1,0 +1,31 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: deploymentParameters
+    default: ""
+
+jobs:
+# Deploy Azure KeyVault   
+  - template: ../../core/yaml/databricks-deploy.yml
+    parameters:
+      displayName: "Databricks Deployment"
+      deploymentName: "DatabricksDeployment"
+      dependsOn: []
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      filePath: "src/azure.databricks/databricks.ps1"
+      deploymentParameters:
+        -Environment "${{ parameters.environment }}"
+        -DatabricksToken "$(DATABRICKS_TOKEN)"
+        -DatabricksHost "$(DATABRICKS_HOST)"
+        -ClusterName "$(cluster_name)"
+        -KeyVaultName "$(keyvault_name)"
+        -KeyVaultResourceID "$(keyvault_resource_id)"
+        -ADLS_SPN "$(ADLS_SPN)"

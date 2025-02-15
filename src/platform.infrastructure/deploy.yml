@@ -11,64 +11,69 @@ parameters:
     default: ""
 
 jobs:
-# Deploy Azure KeyVault   
-  - template: ../../core/yaml/bicep-deploy.yml
-    parameters:
-      displayName: "Keyvault Deployment"
-      deploymentName: "DeployKeyvault"
-      dependsOn: []
-      resourceGroupName: "$(resourceGroup)"
-      environment: "${{ parameters.environment }}"
-      serviceConnection: "${{ parameters.serviceConnection }}"
-      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      templatePath: "../bicep/keyvault.bicep"
-      deploymentParameters: 
-        keyVaultName='$(keyVaultName)'
-        networkIsolationMode='vNet'
+#  - template: yaml/bicep-deploy.yml
+#    parameters:
+#      displayName: "Keyvault Deployment"
+#      deploymentName: "DeployKeyvault"
+#      dependsOn: []
+#      resourceGroupName: "$(resourceGroup)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      templatePath: "../bicep/keyvault.bicep"
+#      deploymentParameters: 
+#        keyVaultName='$(keyVaultName)'
+      
+#  - template: yaml/bicep-deploy.yml
+#    parameters:
+#      displayName: "Storage Account Deployment"
+#      deploymentName: "DeployStorageAccount"
+#      dependsOn: [DeployKeyvault]
+#      resourceGroupName: "$(resourceGroup)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      templatePath: "../bicep/storage-account.bicep"
+#      deploymentParameters:
+#        networkIsolationMode='vNet'
+#        keyVaultName='$(keyVaultName)'
+#        storageAccountName='$(storageAccountName)'
+#        ctrlDeployStreaming='false'
+#        containerNames="('raw', 'curated')"
 
-# Deploy Azure DataLake      
-  - template: ../../core/yaml/bicep-deploy.yml
+  - template: yaml/bicep-deploy.yml
     parameters:
-      displayName: "Storage Account Deployment"
-      deploymentName: "DeployStorageAccount"
-      dependsOn: [DeployKeyvault]
+      displayName: "Data Factory Deployment"
+      deploymentName: "DeployDataFactory"
+      dependsOn: [] # DeployStorageAccount
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      templatePath: "../bicep/storage-account.bicep"
+      templatePath: "../bicep/DataFactory.bicep"
       deploymentParameters:
-        networkIsolationMode='vNet'
-        keyVaultName='$(keyVaultName)'
-        storageAccountName='$(storageAccountName)'
-        ctrlDeployStreaming='false'
-        containerNames="('raw', 'curated')"
+        environment="${{ parameters.environment }}"
+        datafactory_name="$(dataFactoryName)"
+        datafactory_location= location
+        integrated_runtime_name="integrated_runtime_name"
+        repositoryName="Advisory_DataAnalytics_Platform"
+        repositoryType="FactoryVSTSConfiguration"
+        repositoryAccountName="chixvio"
+        repositoryProjectName="Pylonegg"
+        repositoryCollaborationBranch="develop"
+        repositoryRootFolder="src/azure.datafactory"
 
-# Deploy Azure DataBricks
-  - template: ../../core/yaml/bicep-deploy.yml
-    parameters:
-      displayName: "Databricks Workspace Deployment"
-      deploymentName: "DeployDatabricksWorkspace"
-      dependsOn: [DeployStorageAccount]
-      resourceGroupName: "$(resourceGroup)"
-      environment: "${{ parameters.environment }}"
-      serviceConnection: "${{ parameters.serviceConnection }}"
-      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      templatePath: "../bicep/databricks.bicep"
-      deploymentParameters:
-        databricksWorkspaceName="$(databricksWorkspaceName)"
-        pricingTier="premium"
-
-# # Deploy Azure DataFactory
-#   - template: ../../core/yaml/bicep-deploy.yml
-#     parameters:
-#       displayName: "Data Factory Deployment"
-#       deploymentName: "DeployDataFactory"
-#       dependsOn: [DeployStorageAccount]
-#       resourceGroupName: "$(resourceGroup)"
-#       environment: "${{ parameters.environment }}"
-#       serviceConnection: "${{ parameters.serviceConnection }}"
-#       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#       templatePath: "../bicep/data-factory.bicep"
-#       deploymentParameters:
-#         dataFactoryName="$(dataFactoryName)"
+#  - template: yaml/bicep-deploy.yml
+#    parameters:
+#      displayName: "Databricks Workspace Deployment"
+#      deploymentName: "DeployDatabricksWorkspace"
+#      dependsOn: [DeployStorageAccount]
+#      resourceGroupName: "$(resourceGroup)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      templatePath: "../bicep/databricks.bicep"
+#      deploymentParameters:
+#        databricksWorkspaceName="$(databricksWorkspaceName)"
+#        pricingTier="premium"
+#

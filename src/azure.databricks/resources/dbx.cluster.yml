@@ -1,14 +1,17 @@
+# The main job for dbx.
 resources:
+
   clusters:
-    x_cluster:
-      cluster_name: "POC Cluster"
+    demo_cluster:
+      cluster_name: "Advisory Shared Cluster"
       num_workers: 2
       node_type_id: "Standard_DS3_v2"
       autotermination_minutes: 10
-      autoscale:
-        min_workers: 1
-        max_workers: 2
+      autoscale: 
+        min_workers: 2
+        max_workers: 10
       spark_version: "15.4.x-scala2.12"
-      spark_conf:
-        "spark.executor.memory": "2g"
+      spark_conf: 
+        "spark.hadoop.fs.azure.account.oauth2.client.endpoint.${${var.adls_name}}.dfs.core.windows.net": "https://login.microsoftonline.com/ffd682b2-afb6-4bb2-9c9f-573a10bf18be/oauth2/token spark.hadoop.fs.azure.account.oauth2.client.secret.${var.adls_name}.dfs.core.windows.net  {{secrets/BlobStorage/ADLS_SPN}} spark.hadoop.fs.azure.account.oauth2.client.id.${var.adls_name}.dfs.core.windows.net ${var.adls_spn_id}"
+      #  "spark.hadoop.fs.azure.account.auth.type.x=${{var.adls_name}}.dfs.core.windows.net": "OAuth"
       data_security_mode: USER_ISOLATION

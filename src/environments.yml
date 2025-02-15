@@ -1,0 +1,40 @@
+parameters:
+- name: buildTemplatePath
+  default: ''
+- name: deployTemplatePath
+  default: ''
+- name: skipBuild
+  default: ''
+
+
+stages:
+  - stage: Build
+    displayName: Build
+    condition: ne(${{ parameters.skipBuild }}, 'true')
+    jobs:
+      - template: ${{ parameters.buildTemplatePath }}
+        parameters:
+         serviceConnection: "Pylonegg - Dev"
+         environmentVariableGroup: "Data Platform Dev"
+
+  - stage: DEV
+    displayName: DEV
+    dependsOn: [Build]
+    condition: or(succeeded(), eq(${{ parameters.skipBuild }}, 'true')) # Run if skipBuild is true OR Build Succeeds
+    jobs:
+      - template: "${{ parameters.deployTemplatePath }}"
+        parameters:
+          environment: "dev"
+          serviceConnection: "Pylonegg - Dev"
+          environmentVariableGroup: "Data Platform Dev"
+
+#  - stage: DEV
+#    displayName: DEV
+#    dependsOn: [Build]
+#    condition: or(succeeded(), eq(${{ parameters.skipBuild }}, 'true')) # Run if skipBuild is true OR Build Succeeds
+#    jobs:
+#      - template: "${{ parameters.deployTemplatePath }}"
+#        parameters:
+#          environment: "dev"
+#          serviceConnection: "UK Advisory Dev Test"
+#          environmentVariableGroup: "Advisory_Platform_Dev"

@@ -1,0 +1,17 @@
+{
+    "name": "SourceDataset_ans",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "datalakelinkedService",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "Binary",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation"
+            }
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,7 @@
+trigger: none
+stages: 
+  - template: ../../src/environments.yml
+    parameters:
+      skipBuild: false
+      buildTemplatePath:  azure.datafactory/build.yml
+      deployTemplatePath: azure.datafactory/deploy.yml

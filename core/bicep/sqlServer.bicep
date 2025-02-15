@@ -1,43 +1,59 @@
-param resourceLocation            string
-param sqlServerName               string
-param networkIsolationMode        string
-param aadAdminObjectId            string
-param databaseNames               array
-param tags                        object
-param admin_login                 string
+param sqlServerName string
+param adminLogin string
 @secure()
-param admin_password              string
+param adminPassword string
+param databaseName string
+param serverLocation string
+param privateEndpointName string
+param SubnetId string
 
-
-@description('Deploy Sql Server Resource')
-resource r_sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
+// SQL Server Resource
+resource SQL_Server 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: sqlServerName
-  location: resourceLocation
-  tags: tags
-  identity: {
-    type: 'SystemAssigned'
-  }
+  location: serverLocation
   properties: {
-    administratorLogin: admin_login
-    administratorLoginPassword: admin_password
-    publicNetworkAccess: networkIsolationMode == 'vNet' ? 'Disabled' : 'Enabled'
-    restrictOutboundNetworkAccess: 'Disabled'
-    administrators: {
-      administratorType: 'ActiveDirectory'
-      principalType: 'Group'
-      login: 'AADServerAdmin'
-      sid: aadAdminObjectId
-      tenantId: tenant().tenantId
-    }
+    administratorLogin: adminLogin
+    administratorLoginPassword: adminPassword
   }
 }
 
-@description('Deploy Sql Server Database Resources')
-resource r_sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = [for databaseName in databaseNames: {
-  parent: r_sqlServer
+// Database on SQL Server Resource
+resource Database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   name: databaseName
-  location: resourceLocation
+  parent: SQL_Server
+  location: serverLocation
   sku: {
-    name: 'basic'
+    name: 'Standard'
+    tier: 'Standard'
   }
-}]
+}
+
+// Private Endpoint Resource
+resource Private_Endpoint 'Microsoft.Network/privateEndpoints@2021-02-01' = {
+  name: privateEndpointName
+  location: serverLocation
+  properties: {
+    subnet: {
+      id: SubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'sqlServerConnection'
+        properties: {
+          privateLinkServiceConnectionState: {
+            status: 'Approved'
+          }
+          privateLinkServiceId: SQL_Server.id
+          groupIds: [
+            'sqlServer'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+// Outputs
+output sqlServer_name string = SQL_Server.name
+output database_name string = Database.name
+output privateEndpoint_name string = Private_Endpoint.name

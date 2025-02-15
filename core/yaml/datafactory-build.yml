@@ -1,0 +1,55 @@
+parameters:
+  - name: deploymentName
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: folderPath
+    default: ""
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: dependsOn
+    type: object
+    default: []
+  - name: displayName
+    default: ""
+
+jobs:
+- job: BuildArtifacts
+  pool:
+    vmImage: "windows-latest"
+  variables:
+    - group: ${{ parameters.environmentVariableGroup }}
+  steps:
+  - task: Npm@1
+    displayName: 'Install npm package'
+    inputs:
+      command: 'install'
+      workingDir: '$(Build.Repository.LocalPath)\src\azure.datafactory'
+      verbose: true
+
+  - task: Npm@1
+    inputs:
+      command: 'custom'
+      workingDir: '$(Build.Repository.LocalPath)\src\azure.datafactory'
+      customCommand: 'run build export $(Build.Repository.LocalPath)\src\azure.datafactory /subscriptions/$(SubscriptionID)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.DataFactory/factories/$(Datafactory_Name) "ArmTemplate"'
+    displayName: 'Generate ARM template DataFactory' 
+
+  - task: CopyFiles@2
+    inputs:
+      targetFolder: '$(Build.ArtifactStagingDirectory)' 
+    displayName: 'Copy Application Artifacts' 
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.Repository.LocalPath)\src\azure.datafactory\config'
+      contents: '*.json'
+      targetFolder: '$(Build.ArtifactStagingDirectory)\src\azure.datafactory\ARMTemplate'
+    displayName: 'Copy Template Parameters'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Files'
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: drop

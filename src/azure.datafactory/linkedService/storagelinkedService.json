@@ -1,0 +1,16 @@
+{
+    "name": "storagelinkedService",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "AzureBlobStorage",
+        "typeProperties": {
+            "serviceEndpoint": "https://daz1advdaibkstg01.blob.core.windows.net/",
+            "accountKind": "StorageV2"
+        },
+        "connectVia": {
+            "referenceName": "d-az1-advdai-ir01",
+            "type": "IntegrationRuntimeReference"
+        }
+    }
+}

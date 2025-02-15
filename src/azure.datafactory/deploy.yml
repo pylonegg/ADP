@@ -1,0 +1,27 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: deploymentParameters
+    default: ""
+
+jobs:
+# Deploy Azure Datafactory   
+  - template: ../../core/yaml/datafactory-deploy.yml
+    parameters:
+      displayName: "Deploy DataFactory Artifacts"
+      deploymentName: "DeployDataFactoryArtifacts"
+      dependsOn: []
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      filePath: "src/azure.datafactory/datafactory.ps1"
+      deploymentParameters:
+        -Environment "${{ parameters.environment }}"
+        -DataFactoryName "$(Datafactory_Name)"
+        -ResourceGroupName "$(ResourceGroupName)"

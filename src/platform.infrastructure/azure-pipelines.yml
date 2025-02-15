@@ -1,6 +1,0 @@
-trigger: none
-stages: 
-  - template: ../../core/yaml/_environments.yml
-    parameters:
-      buildTemplatePath:  ../../src/platform.infrastructure/build.yml
-      deployTemplatePath: ../../src/platform.infrastructure/deploy.yml
