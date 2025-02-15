@@ -38,30 +38,30 @@ jobs:
       deploymentParameters: 
         keyvault_name='$(keyvault_name)'
         subnet_id='$(subnet_id)'
-      
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      displayName: "Storage Account Deployment"
-#      deploymentName: "DeployStorageAccount"
-#      dependsOn: [DeployKeyvault]
-#      resourceGroupName: "$(resourceGroup)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      templatePath: "../bicep/storage-account.bicep"
-#      deploymentParameters:
-#        networkIsolationMode='vNet'
-#        keyVaultName='$(keyVaultName)'
-#        storageAccountName='$(storageAccountName)'
-#        ctrlDeployStreaming='false'
-#        containerNames="('raw', 'curated')"
+
+
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/storageAccount-adls.bicep"
+      displayName: "Deploy ADLS"
+      deploymentName: "DeployADLS"
+      dependsOn: [DeployKeyvault]
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        storageaccount_name='$(storageAccount_name)'
+        storage_sku='$(storageAccount_sku)'
+        keyvault_name='$(keyvault_name)'
+
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
       templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
-      dependsOn: [DeployKeyvault] # DeployStorageAccount
+      dependsOn: [DeployADLS] # DeployStorageAccount
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
@@ -77,6 +77,7 @@ jobs:
         repositoryProjectName="Pylonegg"
         repositoryCollaborationBranch="develop"
         repositoryRootFolder="src/azure.datafactory"
+
 
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
