@@ -1,9 +1,6 @@
 @description('data factory name.')
 param datafactory_name string
 
-@description('data factory location.')
-param datafactory_location string
-
 @description('Environment name.')
 param environment string
 
@@ -35,7 +32,7 @@ var properties = environment == 'Development' ? {
 // Data Factory Resource
 resource DataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   name: datafactory_name
-  location: datafactory_location
+  location: resourceGroup().location
   tags: resourceGroup().tags
   identity: {
     type: 'SystemAssigned'

@@ -54,7 +54,6 @@ jobs:
       deploymentParameters:
         environment="${{ parameters.environment }}"
         datafactory_name="$(dataFactoryName)"
-        datafactory_location= "uk south"
         integrated_runtime_name="integrated_runtime_name"
         repositoryName="Advisory_DataAnalytics_Platform"
         repositoryType="FactoryVSTSConfiguration"
