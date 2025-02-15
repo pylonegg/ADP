@@ -43,7 +43,7 @@ jobs:
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
-      displayName: "Data Factory Deployment"
+      displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
       dependsOn: [] # DeployStorageAccount
       resourceGroupName: "$(resourceGroup)"
@@ -55,8 +55,8 @@ jobs:
         environment="${{ parameters.environment }}"
         datafactory_name="$(dataFactoryName)"
         integrated_runtime_name="integrated_runtime_name"
-        repositoryName="Advisory_DataAnalytics_Platform"
-        repositoryType="FactoryVSTSConfiguration"
+        repositoryName="Framework"
+        repositoryType="FactoryGitHubConfiguration"
         repositoryAccountName="chixvio"
         repositoryProjectName="Pylonegg"
         repositoryCollaborationBranch="develop"

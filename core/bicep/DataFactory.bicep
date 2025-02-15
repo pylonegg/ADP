@@ -17,7 +17,7 @@ param repositoryRootFolder string
 
 // Variables
 @description('Data Factory Repo Link')
-var properties = environment == 'Development' ? {
+var properties = environment == 'dev' ? {
   repoConfiguration: {
     repositoryName: repositoryName
     accountName: repositoryAccountName
