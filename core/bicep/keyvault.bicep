@@ -3,6 +3,9 @@ param keyvault_name string
 
 param subnet_id string
 
+resource VNET 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
+  name: 'my_vnet'
+}
 
 // Key Vault Resource
 resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
@@ -41,7 +44,7 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
       ]
       virtualNetworkRules: [
         {
-          id: subnet_id
+          id: VNET.properties.subnets[0].id
         }
       ]
     }
