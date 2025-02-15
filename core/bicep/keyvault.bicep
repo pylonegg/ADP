@@ -39,12 +39,12 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
           value: '52.166.166.111/32'
         }
       ]
-    //  virtualNetworkRules: [
-    //    {
-    //      id: subnet_id
-    //      ignoreMissingVnetServiceEndpoint: true
-    //    }
-    //  ]
+      virtualNetworkRules: [
+        {
+          id: subnet_id
+          ignoreMissingVnetServiceEndpoint: true
+        }
+      ]
     }
   }
 }
