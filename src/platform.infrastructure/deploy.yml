@@ -11,18 +11,33 @@ parameters:
     default: ""
 
 jobs:
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/virtual-network.bicep"
+      displayName: "Deploy Virtual Network"
+      deploymentName: "DeployVirtualNetwork"
+      dependsOn: []
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters: 
+        virtualNetwork_name='my_vnet'
+        subnet_name='my_subnet'
+
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
-#      displayName: "Keyvault Deployment"
+#      templatePath: "../bicep/keyvault.bicep"
+#      displayName: "Deploy Keyvault"
 #      deploymentName: "DeployKeyvault"
-#      dependsOn: []
+#      dependsOn: [DeployVirtualNetwork]
 #      resourceGroupName: "$(resourceGroup)"
 #      environment: "${{ parameters.environment }}"
 #      serviceConnection: "${{ parameters.serviceConnection }}"
 #      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      templatePath: "../bicep/keyvault.bicep"
 #      deploymentParameters: 
-#        keyVaultName='$(keyVaultName)'
+#        keyvault_name='$(keyVaultName)'
+#        SubnetId='$(SubnetId)'
       
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
@@ -43,6 +58,7 @@ jobs:
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
+      templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
       dependsOn: [] # DeployStorageAccount
@@ -50,7 +66,6 @@ jobs:
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      templatePath: "../bicep/DataFactory.bicep"
       deploymentParameters:
         environment="${{ parameters.environment }}"
         datafactory_name="$(dataFactoryName)"

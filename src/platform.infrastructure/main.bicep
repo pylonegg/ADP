@@ -58,39 +58,24 @@ var tags = resourceGroup().tags
 
 
 // Modules
-// Data Factory
-module DataFactory '../../core/bicep/DataFactory.bicep' = {
-  name: 'Data_Factory_Deploy'
-  params: {
-    environment: environment
-    datafactory_name: Datafactory_Name
-    datafactory_location: location
-    integrated_runtime_name: integrated_runtime_name
-    repositoryName: 'Advisory_DataAnalytics_Platform'
-    repositoryType: 'FactoryVSTSConfiguration'
-    repositoryAccountName: 'bdouk'
-    repositoryProjectName: 'Applications Support'
-    repositoryCollaborationBranch: 'main'
-    repositoryRootFolder: 'main.bicep'
-  }
-}
-
 // Key Vault + Linked to DF
-module KeyVault '../../core/bicep/KeyVault.bicep' = {
+module KeyVault '../../core/bicep/keyvault.bicep' = {
   name: 'Key_Vault_Deploy'
   params: {
     keyvault_name: Keyvault_Name
     keyvault_tags: tags
     keyvault_location: location
     keyvault_tenantid: subscription().tenantId
-    datafactory_principalid: DataFactory.outputs.datafactoryPrincipleID
-    storageaccount_name: DataLake.outputs.storageaccount_name
-    storageaccount_connectionstring: DataLake.outputs.storageaccount_connectionstring
-    backupstorage_connectionstring: StorageV2_Backup.outputs.backupstorage_connectionstring
-    storagebackup_name: StorageV2_Backup.outputs.backup_storageaccount_name
     SubnetId: SubnetId
   }
 }
+//     datafactory_principalid: DataFactory.outputs.datafactoryPrincipleID
+//     storageaccount_name: DataLake.outputs.storageaccount_name
+//     storageaccount_connectionstring: DataLake.outputs.storageaccount_connectionstring
+//     backupstorage_connectionstring: StorageV2_Backup.outputs.backupstorage_connectionstring
+//     storagebackup_name: StorageV2_Backup.outputs.backup_storageaccount_name
+//   }
+// }
 
 // SQL Server + DB + Private Endpoint
 module sql_Server '../../core/bicep/sqlServer.bicep' = {

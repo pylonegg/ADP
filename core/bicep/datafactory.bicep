@@ -4,6 +4,9 @@ param datafactory_name string
 @description('Environment name.')
 param environment string
 
+@description('Key Vault name.')
+param keyvault_name string
+
 param managed_vnet_name string = 'default'
 
 param integrated_runtime_name string 
@@ -81,7 +84,27 @@ resource DataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
 //     Managed_Virtual_Network
 //   ]
 // }
-// 
+
+resource KeyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  name: keyvault_name
+}
+
+resource KeyVaultAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-preview' = {
+  name: 'add'
+  parent: KeyVault
+  properties:{
+    accessPolicies: [
+      {
+        objectId: DataFactory.identity.principalId
+        tenantId: subscription().tenantId
+        permissions: {
+          secrets: ['get']
+        }
+      }
+    ]
+  }
+}
+
 // // Outputs
 // output datafactoryID string = DataFactory.id
 // output datafactoryPrincipleID  string = DataFactory.identity.principalId
