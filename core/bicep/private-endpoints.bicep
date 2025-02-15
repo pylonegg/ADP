@@ -1,3 +1,7 @@
+
+param storageaccountADLS_name string
+param storageaccountBackup_name string
+
 @description('Data Lake Storage Account Private Endpoints')
 param privateEndpointblob string
 param privateEndpointdfs string
@@ -5,17 +9,13 @@ param privateEndpointdfs string
 @description('Subnet ID')
 param subnet_id string
 
-@description('Backup Vault IDs')
-param backupVaultid string
-param backupVaultPrincleId string
-
-@description('ADF IDs')
-param adfid string
-param adfPrincleId string
 
 
+// ADLS Storage Account Private Endpoint
+resource ADLSStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+  name:storageaccountADLS_name
+}
 
-// Private Endpoint Resource - blob
 resource Blob_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
   name: privateEndpointblob
   location: resourceGroup().location
@@ -30,7 +30,7 @@ resource Blob_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
           privateLinkServiceConnectionState: {
             status: 'Approved'
           }
-          privateLinkServiceId: ADLS.id
+          privateLinkServiceId: ADLSStorageAccount.id
           groupIds: [
             'blob'
           ]
@@ -55,7 +55,7 @@ resource DFS_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
           privateLinkServiceConnectionState: {
             status: 'Approved'
           }
-          privateLinkServiceId: ADLS.id
+          privateLinkServiceId: ADLSStorageAccount.id
           groupIds: [
             'dfs'
           ]
@@ -67,13 +67,17 @@ resource DFS_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
 
 
 
-// Private Endpoint Resource - (backup)
+// Backup Storage Account Private Endpoint
+resource BackupStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+  name: storageaccountBackup_name
+}
+
 resource Private_Endpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   name: privateEndpointblob
   location: resourceGroup().location
   properties: {
     subnet: {
-      id: SubnetId
+      id: subnet_id
     }
     privateLinkServiceConnections: [
       {
@@ -82,71 +86,12 @@ resource Private_Endpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
           privateLinkServiceConnectionState: {
             status: 'Approved'
           }
-          privateLinkServiceId: StorageAccount.id
-          groupIds: ['blob']
+          privateLinkServiceId: BackupStorageAccount.id
+          groupIds: [
+            'blob'
+          ]
         }
       }
     ]
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Variables
-
-@description('Data Lake connection string in Key Vault')
-var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${ADLS.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${DataLake.listKeys().keys[0].value}'
-
-@description('Storage Account Backup Contributor')
-var roleDefinitionId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')
-
-@description('Storage Blob Data Contributor')
-var roleDefinitionId1 = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-
-
-
-// Role Assignment Managed Identity for vault to DataLake - For backup Instance
-resource RBAC_BackUpVault 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(backupVaultid, roleDefinitionId, ADLS.id)
-  scope: ADLS
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: backupVaultPrincleId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Role Assignment Managed Identity for ADF to DataLake
-resource RBAC_ADF 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(adfid, roleDefinitionId1, ADLS.id)
-  scope: ADLS
-  properties: {
-    roleDefinitionId: roleDefinitionId1
-    principalId: adfPrincleId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Outputs
-output storageaccount_resource string = ADLS.id
-output storageaccount_name string = storageaccount_name
-output storageaccount_connectionstring string = storageAccountConnectionString
-output LifecycleManagement_name string = Lifecycle_Manage.name
-output Container_names array = container_names
-output storageaccount_dfs_endpoint string = ADLS.properties.primaryEndpoints.dfs
-output storageaccount_privateendpoint_blob string = Blob_PrivateEnd.name
-output storageaccount_privateendpoint_dfs string = DFS_PrivateEnd.name

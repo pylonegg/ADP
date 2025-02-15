@@ -72,7 +72,7 @@ jobs:
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
         container_names='["Archive"]'
-        ctrl_lifecycleManagement=false
+        ctrl_lifeCycleManagement=false
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
@@ -95,6 +95,21 @@ jobs:
         repositoryProjectName="Pylonegg"
         repositoryCollaborationBranch="develop"
         repositoryRootFolder="src/azure.datafactory"
+
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/rbac.bicep"
+      displayName: "Assign RBAC"
+      deploymentName: "AssignRBAC"
+      dependsOn: [DeployDataFactory]
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        storageaccount_name='$(storageAccount_name)'
+        storageaccountBackup_name='$(storageAccountBackup_name)'
+        datafactory_name='$(dataFactory_name)'
 
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
