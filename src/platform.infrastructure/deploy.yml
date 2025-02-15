@@ -11,7 +11,7 @@ parameters:
     default: ""
 
 jobs:
-#  - template: yaml/bicep-deploy.yml
+#  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
 #      displayName: "Keyvault Deployment"
 #      deploymentName: "DeployKeyvault"
@@ -24,7 +24,7 @@ jobs:
 #      deploymentParameters: 
 #        keyVaultName='$(keyVaultName)'
       
-#  - template: yaml/bicep-deploy.yml
+#  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
 #      displayName: "Storage Account Deployment"
 #      deploymentName: "DeployStorageAccount"
@@ -41,7 +41,7 @@ jobs:
 #        ctrlDeployStreaming='false'
 #        containerNames="('raw', 'curated')"
 
-  - template: yaml/bicep-deploy.yml
+  - template: ../../core/yaml/bicep-deploy.yml
     parameters:
       displayName: "Data Factory Deployment"
       deploymentName: "DeployDataFactory"
@@ -63,7 +63,7 @@ jobs:
         repositoryCollaborationBranch="develop"
         repositoryRootFolder="src/azure.datafactory"
 
-#  - template: yaml/bicep-deploy.yml
+#  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
 #      displayName: "Databricks Workspace Deployment"
 #      deploymentName: "DeployDatabricksWorkspace"

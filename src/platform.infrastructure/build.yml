@@ -11,7 +11,7 @@ parameters:
     default: ""
 
 jobs:
-  - template: yaml/publish-path-as-artifact.yml
+  - template: ../../core/yaml/publish-path-as-artifact.yml
     parameters:
       Name: "PublishBicep"
       vmImage: "windows-latest"
