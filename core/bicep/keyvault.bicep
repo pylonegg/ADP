@@ -45,6 +45,7 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
       virtualNetworkRules: [
         {
           id: VNET.properties.subnets[0].id
+          ignoreMissingVnetServiceEndpoint: true
         }
       ]
     }
