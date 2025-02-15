@@ -4,6 +4,7 @@ param storageaccount_name string
 @description('Key Vault Name.')
 param keyvault_name string
 
+@description('Hierachichal name space/isDataLake.')
 param isHnsEnabled bool = false
 
 @description('Storage Account sku')

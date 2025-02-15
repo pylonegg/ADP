@@ -62,7 +62,7 @@ jobs:
       templatePath: "../bicep/storageAccount.bicep"
       displayName: "Deploy Backup Storage Account"
       deploymentName: "DeployBackupStorage"
-      dependsOn: [DeployKeyvault]
+      dependsOn: [DeployADLS]
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
@@ -71,7 +71,7 @@ jobs:
         storageaccount_name='$(storageAccountBackup_name)'
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
-        container_names='["Archive"]'
+        container_names='["archive"]'
         ctrl_lifeCycleManagement=false
 
   - template: ../../core/yaml/bicep-deploy.yml
@@ -79,7 +79,7 @@ jobs:
       templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
-      dependsOn: [DeployADLS]
+      dependsOn: [DeployBackupStorage]
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
@@ -99,8 +99,8 @@ jobs:
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
       templatePath: "../bicep/rbac.bicep"
-      displayName: "Assign RBAC"
-      deploymentName: "AssignRBAC"
+      displayName: "Role Assignments"
+      deploymentName: "roleAssignments"
       dependsOn: [DeployDataFactory]
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
