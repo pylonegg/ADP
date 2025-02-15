@@ -67,6 +67,32 @@ resource DFS_PrivateEnd 'Microsoft.Network/privateEndpoints@2023-05-01' = {
 
 
 
+// Private Endpoint Resource - (backup)
+resource Private_Endpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
+  name: privateEndpointblob
+  location: storageaccount_location
+  properties: {
+    subnet: {
+      id: SubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'StoragePE_blob'
+        properties: {
+          privateLinkServiceConnectionState: {
+            status: 'Approved'
+          }
+          privateLinkServiceId: StorageAccount.id
+          groupIds: [
+            'blob'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+
 
 
 

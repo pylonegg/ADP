@@ -69,19 +69,7 @@ var tags = resourceGroup().tags
 
 
 
-// // Secret created with connection string to data lake storage account
-// resource Secret_DataLake 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
-//   name: '${storageaccount_name}-connectionstring'
-//   parent: KeyVault
-//   properties: {
-//     attributes: {
-//       enabled: true
-//     }
-//     contentType: 'string'
-//     value: storageaccount_connectionstring
-//   }
-// }
-// 
+
 // // Secret created with connection string to storagev2 backup account
 // resource Secret_Storage 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
 //   name: '${storagebackup_name}-connectionstring'
@@ -112,10 +100,11 @@ module sql_Server '../../core/bicep/sqlServer.bicep' = {
 }
 
 // Data Lake Gen 2 - Storage Account + Private Endpoint
-module DataLake '../../core/bicep/DataLakeStorage.bicep' = {
+module DataLake '../../core/bicep/storageAccount-adls.bicep' = {
   name: 'DataLake_Storage_Deploy'
   params: {
     storageaccount_name: ADLS_Name
+    keyvault_name:
     storageaccount_tags: tags
     storageaccount_location: location
     privateEndpointblob: ADLS_PE_Blob
@@ -171,33 +160,33 @@ module DataBricks_AccessConnector '../../core/bicep/DataBricks_AccessConnector.b
   }
 }
 
-// BackUp Vault + Policy
-module Backup_Vault '../../core/bicep/BackupVault.bicep' = {
-  name: 'BackUpVault_Deploy'
-  params: {
-    vault_name: Vault_Name
-    location: location
-    vaultStorageRedundancy: vaultStorageRedundancy
-  }
-}
-
-// BackUp Vault Instance
-module BackUp_Vault_Instance '../../core/bicep/BackupVault_Instance.bicep' = {
-  name: 'Backup_Instance_Deploy'
-  params: {
-    backupPolicyid: Backup_Vault.outputs.backupPolicy_ID
-    resourceLocation: location
-    storageAccountid: StorageV2_Backup.outputs.backup_storageaccount_resource
-    storageAccountName: StorageV2_Backup.outputs.backup_storageaccount_name
-    backupInstance_name: '${resourcePrefix}instance'
-    Vault_Name: Vault_Name
-  }
-  dependsOn: [
-    StorageV2_Backup
-    Backup_Vault
-    DataLake
-  ]
-}
+// // BackUp Vault + Policy
+// module Backup_Vault '../../core/bicep/BackupVault.bicep' = {
+//   name: 'BackUpVault_Deploy'
+//   params: {
+//     vault_name: Vault_Name
+//     location: location
+//     vaultStorageRedundancy: vaultStorageRedundancy
+//   }
+// }
+// 
+// // BackUp Vault Instance
+// module BackUp_Vault_Instance '../../core/bicep/BackupVault_Instance.bicep' = {
+//   name: 'Backup_Instance_Deploy'
+//   params: {
+//     backupPolicyid: Backup_Vault.outputs.backupPolicy_ID
+//     resourceLocation: location
+//     storageAccountid: StorageV2_Backup.outputs.backup_storageaccount_resource
+//     storageAccountName: StorageV2_Backup.outputs.backup_storageaccount_name
+//     backupInstance_name: '${resourcePrefix}instance'
+//     Vault_Name: Vault_Name
+//   }
+//   dependsOn: [
+//     StorageV2_Backup
+//     Backup_Vault
+//     DataLake
+//   ]
+// }
 
 
 // Custom Advisory RBAC Role 
@@ -211,12 +200,6 @@ module Custom_Storage_Role '../../core/bicep/CustomRoles.bicep' = {
   ]
 }
 
-// Locks
-module ResoruceGroup_lock '../../core/bicep/ApplyLock.bicep' = {
-  name: 'Resource_Lock_Deploy'
-  scope: resourceGroup()
-  params: {}
-}
 
 /* Diagonstics
 module Diagonstics '../../core/bicep/Monitoring.bicep' = {

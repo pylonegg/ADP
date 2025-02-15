@@ -1,6 +1,11 @@
-param storageaccount_location string
-param storageaccount_tags object
-param StorageAccountName string
+@description('Storage Account Name.')
+param storageaccount_name string
+
+@description('Key Vault Name.')
+param keyvault_name string
+
+param isHnsEnabled bool = false
+
 @description('Storage Account sku')
 @allowed([
   'Standard_LRS'
@@ -12,8 +17,8 @@ param StorageAccountName string
   'Standard_GZRS'
   'Standard_RAGZRS'
 ])
-param storage_sku string
-param SubnetId string
+param storageaccount_sku string
+
 @description('Storage account kind')
 @allowed([
   'Storage'
@@ -23,68 +28,56 @@ param SubnetId string
   'BlockBlobStorage'
 ])
 param storage_kind string = 'StorageV2'
+
 @description('Storage account access tier, Hot  or Cool')
 @allowed([
   'Hot'
   'Cool'
 ])
 param storage_tier string = 'Hot'
-param privateEndpointblob string
-
-param backupVaultid string
-param backupVaultPrincleId string
-
-param adfid string
-param adfPrincleId string
-
 
 @description('Containers')
-param container_names array = [
-'archive'
-]
+param container_names array
 
-@description('Data Lake connection string in Key Vault')
-var backupstorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${StorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${StorageAccount.listKeys().keys[0].value}'
+param ctrl_lifeCycleManagement bool 
 
-@description('Storage Account Backup Contributor')
-var roleDefinitionId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')
-
-@description('Storage Blob Data Contributor')
-var roleDefinitionId1 = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
-
-// Storage Account v2
-resource StorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: StorageAccountName
-  location: storageaccount_location
-  tags: storageaccount_tags
+// Data Lake Gen 2 - Storage Account
+resource StorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+  name: storageaccount_name
+  location: resourceGroup().location
+  tags: resourceGroup().tags
   kind: storage_kind
   properties: {
     accessTier: storage_tier
+    supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
+    isHnsEnabled: isHnsEnabled
     allowBlobPublicAccess: false
     allowSharedKeyAccess: false
-    allowCrossTenantReplication: true
-    networkAcls: {
-      defaultAction: 'Deny'
-    }
     encryption: {
-       requireInfrastructureEncryption: true
+      requireInfrastructureEncryption: true
+      keySource: 'Microsoft.Storage'
+      services: {
+        blob: {
+          enabled: true
+        }
+      }
     }
   }
   sku: {
-    name: storage_sku
+    name: storageaccount_sku
   }
 }
 
 // Blob Services - Settings
 resource Blob_Services 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' = {
-  parent: StorageAccount 
+  parent: StorageAccount
   name: 'default'
   properties: {
     lastAccessTimeTrackingPolicy: {
       blobType: [
-         'string'
-         ]
+        'string'
+      ]
       enable: true
       name: 'AccessTimeTracking'
       trackingGranularityInDays: 1
@@ -101,53 +94,30 @@ resource Containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2
   }
 }]
 
-// Private Endpoint Resource - blob
-resource Private_Endpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
-  name: privateEndpointblob
-  location: storageaccount_location
-  properties: {
-    subnet: {
-      id: SubnetId
-    }
-    privateLinkServiceConnections: [
-      {
-        name: 'StoragePE_blob'
-        properties: {
-          privateLinkServiceConnectionState: {
-            status: 'Approved'
-          }
-          privateLinkServiceId: StorageAccount.id
-          groupIds: [
-            'blob'
-          ]
-        }
-      }
-    ]
+
+module LifecycleManagement './storageAccount-lifecycle.bicep' = if (ctrl_lifeCycleManagement){
+  name: 'ADLS_LifecycleManagement'
+  params: {
+    storageaccount_name: storageaccount_name
   }
 }
 
-// Role Assignment Mnaged Identity for vault to Storagev2 Account - For backup Instance
-resource RBAC_BackUpVault 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(backupVaultid, roleDefinitionId, StorageAccount.id)
-  scope: StorageAccount
-  properties: {
-    roleDefinitionId: roleDefinitionId
-    principalId: backupVaultPrincleId
-    principalType: 'ServicePrincipal'
-  }
+
+
+@description('Get reference to Key Vault')
+resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
+  name: keyvault_name
 }
 
-// Role Assignment Managed Identity for ADF to Storage Account
-resource RBAC_ADF 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(adfid, roleDefinitionId1, StorageAccount.id)
-  scope: StorageAccount
+@description('Add Storage account secret to KeyVault')
+resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: '${storageaccount_name}-connectionstring'
+  parent: keyVault
   properties: {
-    roleDefinitionId: roleDefinitionId1
-    principalId: adfPrincleId
-    principalType: 'ServicePrincipal'
+     attributes: {
+       enabled: true
+     }
+     contentType: 'string'
+    value: StorageAccount.listKeys().keys[0].value
   }
 }
-
-output backup_storageaccount_resource string = StorageAccount.id
-output backup_storageaccount_name string = StorageAccount.name
-output backupstorage_connectionstring string = backupstorageConnectionString

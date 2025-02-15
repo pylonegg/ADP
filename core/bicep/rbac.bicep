@@ -42,3 +42,43 @@ output Container_names array = container_names
 output storageaccount_dfs_endpoint string = ADLS.properties.primaryEndpoints.dfs
 output storageaccount_privateendpoint_blob string = Blob_PrivateEnd.name
 output storageaccount_privateendpoint_dfs string = DFS_PrivateEnd.name
+
+
+
+
+
+
+
+
+
+@description('Data Lake connection string in Key Vault')
+var backupstorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${StorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${StorageAccount.listKeys().keys[0].value}'
+
+@description('Storage Account Backup Contributor')
+var roleDefinitionId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')
+
+@description('Storage Blob Data Contributor')
+var roleDefinitionId1 = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+
+
+// Role Assignment Mnaged Identity for vault to Storagev2 Account - For backup Instance
+resource RBAC_BackUpVault 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(backupVaultid, roleDefinitionId, StorageAccount.id)
+  scope: StorageAccount
+  properties: {
+    roleDefinitionId: roleDefinitionId
+    principalId: backupVaultPrincleId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Role Assignment Managed Identity for ADF to Storage Account
+resource RBAC_ADF 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(adfid, roleDefinitionId1, StorageAccount.id)
+  scope: StorageAccount
+  properties: {
+    roleDefinitionId: roleDefinitionId1
+    principalId: adfPrincleId
+    principalType: 'ServicePrincipal'
+  }
+}

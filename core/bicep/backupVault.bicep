@@ -8,9 +8,6 @@ param vault_name string
 ])
 param vaultStorageRedundancy string
 
-@description('Location for all resources.')
-param location string
-
 @description('BackUp / Rentention policy name')
 param backupPolicy_name string = 'GoldPolicy'
 
@@ -36,7 +33,7 @@ var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
 // Back Up Vault 
 resource Backup_Vault 'Microsoft.DataProtection/BackupVaults@2023-05-01' = {
   name: vault_name
-  location: location
+  location: resourceGroup().location
   identity: {
     type: 'systemAssigned'
   }

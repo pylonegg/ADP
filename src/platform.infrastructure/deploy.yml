@@ -25,6 +25,7 @@ jobs:
   #      virtualNetwork_name='my_vnet'
   #      subnet_name='my_subnet'
 
+
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
       templatePath: "../bicep/keyvault.bicep"
@@ -42,8 +43,8 @@ jobs:
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
-      templatePath: "../bicep/storageAccount-adls.bicep"
-      displayName: "Deploy ADLS"
+      templatePath: "../bicep/storageAccount.bicep"
+      displayName: "Deploy ADLS Storage Account"
       deploymentName: "DeployADLS"
       dependsOn: [DeployKeyvault]
       resourceGroupName: "$(resourceGroup)"
@@ -54,6 +55,26 @@ jobs:
         storageaccount_name='$(storageAccount_name)'
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
+        container_names=['adf-pipeline-logs']
+        ctrl_lifecycleManagement=true
+        isHnsEnabled=true
+
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/storageAccount.bicep"
+      displayName: "Deploy Backup Storage Account"
+      deploymentName: "DeployBackupStorage"
+      dependsOn: [DeployKeyvault]
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        storageaccount_name='$(storageAccountBackup_name)'
+        storageaccount_sku='$(storageAccount_sku)'
+        keyvault_name='$(keyvault_name)'
+        container_names=['Archive']
+        ctrl_lifecycleManagement=false
 
 
   - template: ../../core/yaml/bicep-deploy.yml
@@ -61,14 +82,14 @@ jobs:
       templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
-      dependsOn: [DeployADLS] # DeployStorageAccount
+      dependsOn: [DeployADLS]
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters:
         environment="${{ parameters.environment }}"
-        datafactory_name="$(dataFactory_name)"
+        datafactory_name='$(dataFactory_name)'
         keyvault_name='$(keyvault_name)'
         integratedRuntime_name="integratedRuntime_name"
         repositoryName="Framework"
@@ -77,6 +98,14 @@ jobs:
         repositoryProjectName="Pylonegg"
         repositoryCollaborationBranch="develop"
         repositoryRootFolder="src/azure.datafactory"
+
+
+
+
+
+
+
+
 
 
 #  - template: ../../core/yaml/bicep-deploy.yml
@@ -93,3 +122,16 @@ jobs:
 #        databricksWorkspaceName="$(databricksWorkspace_name)"
 #        pricingTier="premium"
 #
+
+
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/resourceGroup-lock.bicep"
+#      displayName: "Resource Group Lock"
+#      deploymentName: "ResourceGroupLock"
+#      dependsOn: [DeployDataFactory]
+#      resourceGroupName: "$(resourceGroup)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
