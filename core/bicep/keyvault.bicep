@@ -24,6 +24,7 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
     tenantId: subscription().tenantId
     enableSoftDelete: true
     enablePurgeProtection: true
+    enableRbacAuthorization: true
     softDeleteRetentionInDays: 90
     accessPolicies: []
     networkAcls: {
