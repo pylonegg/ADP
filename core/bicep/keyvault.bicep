@@ -1,7 +1,7 @@
 @description('key vault name.')
 param keyvault_name string
 
-param SubnetId string
+param subnet_id string
 
 // @description('Data Factory Storage Account resource.')
 // param storageaccount_name string
@@ -50,7 +50,7 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
       ]
       virtualNetworkRules: [
         {
-          id: SubnetId
+          id: subnet_id
           ignoreMissingVnetServiceEndpoint: true
         }
       ]

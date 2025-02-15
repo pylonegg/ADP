@@ -25,19 +25,19 @@ jobs:
         virtualNetwork_name='my_vnet'
         subnet_name='my_subnet'
 
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      templatePath: "../bicep/keyvault.bicep"
-#      displayName: "Deploy Keyvault"
-#      deploymentName: "DeployKeyvault"
-#      dependsOn: [DeployVirtualNetwork]
-#      resourceGroupName: "$(resourceGroup)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      deploymentParameters: 
-#        keyvault_name='$(keyVaultName)'
-#        SubnetId='$(SubnetId)'
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/keyvault.bicep"
+      displayName: "Deploy Keyvault"
+      deploymentName: "DeployKeyvault"
+      dependsOn: [DeployVirtualNetwork]
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters: 
+        keyvault_name='$(keyvault_name)'
+        SubnetId='$(subnet_id)'
       
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
@@ -69,6 +69,7 @@ jobs:
       deploymentParameters:
         environment="${{ parameters.environment }}"
         datafactory_name="$(dataFactoryName)"
+        keyvault_name='$(keyvault_name)'
         integrated_runtime_name="integrated_runtime_name"
         repositoryName="Framework"
         repositoryType="FactoryGitHubConfiguration"

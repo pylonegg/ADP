@@ -63,9 +63,6 @@ module KeyVault '../../core/bicep/keyvault.bicep' = {
   name: 'Key_Vault_Deploy'
   params: {
     keyvault_name: Keyvault_Name
-    keyvault_tags: tags
-    keyvault_location: location
-    keyvault_tenantid: subscription().tenantId
     SubnetId: SubnetId
   }
 }
