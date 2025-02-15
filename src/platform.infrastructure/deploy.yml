@@ -61,7 +61,7 @@ jobs:
       templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
-      dependsOn: [] # DeployStorageAccount
+      dependsOn: [DeployKeyvault] # DeployStorageAccount
       resourceGroupName: "$(resourceGroup)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
