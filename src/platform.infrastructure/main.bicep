@@ -58,21 +58,44 @@ var tags = resourceGroup().tags
 
 
 // Modules
-// Key Vault + Linked to DF
-module KeyVault '../../core/bicep/keyvault.bicep' = {
-  name: 'Key_Vault_Deploy'
-  params: {
-    keyvault_name: Keyvault_Name
-    SubnetId: SubnetId
-  }
-}
-//     datafactory_principalid: DataFactory.outputs.datafactoryPrincipleID
-//     storageaccount_name: DataLake.outputs.storageaccount_name
-//     storageaccount_connectionstring: DataLake.outputs.storageaccount_connectionstring
-//     backupstorage_connectionstring: StorageV2_Backup.outputs.backupstorage_connectionstring
-//     storagebackup_name: StorageV2_Backup.outputs.backup_storageaccount_name
+
+
+// @description('Data Factory Storage Account resource.')
+// param storageaccount_name string
+// @description('Connection String of the storage account resource.')
+// param storageaccount_connectionstring string
+// param storagebackup_name string
+// param backupstorage_connectionstring string
+
+
+
+// // Secret created with connection string to data lake storage account
+// resource Secret_DataLake 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
+//   name: '${storageaccount_name}-connectionstring'
+//   parent: KeyVault
+//   properties: {
+//     attributes: {
+//       enabled: true
+//     }
+//     contentType: 'string'
+//     value: storageaccount_connectionstring
 //   }
 // }
+// 
+// // Secret created with connection string to storagev2 backup account
+// resource Secret_Storage 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
+//   name: '${storagebackup_name}-connectionstring'
+//   parent: KeyVault
+//   properties: {
+//     attributes: {
+//       enabled: true
+//     }
+//     contentType: 'string'
+//     value: backupstorage_connectionstring
+//   }
+// }
+// 
+
 
 // SQL Server + DB + Private Endpoint
 module sql_Server '../../core/bicep/sqlServer.bicep' = {

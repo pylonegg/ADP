@@ -7,7 +7,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'my_vnet'
 }
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-11-01' existing = {
-  name: 'my_subent'
+  name: 'my_subnet'
   parent: vnet
 }
 
@@ -56,43 +56,6 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   }
 }
 
-
-
-// @description('Data Factory Storage Account resource.')
-// param storageaccount_name string
-// @description('Connection String of the storage account resource.')
-// param storageaccount_connectionstring string
-// param storagebackup_name string
-// param backupstorage_connectionstring string
-
-
-
-// // Secret created with connection string to data lake storage account
-// resource Secret_DataLake 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
-//   name: '${storageaccount_name}-connectionstring'
-//   parent: KeyVault
-//   properties: {
-//     attributes: {
-//       enabled: true
-//     }
-//     contentType: 'string'
-//     value: storageaccount_connectionstring
-//   }
-// }
-// 
-// // Secret created with connection string to storagev2 backup account
-// resource Secret_Storage 'Microsoft.KeyVault/vaults/secrets@2021-10-01' = {
-//   name: '${storagebackup_name}-connectionstring'
-//   parent: KeyVault
-//   properties: {
-//     attributes: {
-//       enabled: true
-//     }
-//     contentType: 'string'
-//     value: backupstorage_connectionstring
-//   }
-// }
-// 
 
 //Outputs
 output keyvault_uri string = KeyVault.properties.vaultUri
