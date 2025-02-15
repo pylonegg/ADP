@@ -26,7 +26,6 @@ jobs:
     pool:
       vmImage: "windows-latest"
     variables:
-      - group: ${{ parameters.environment }}
       - group: ${{ parameters.environmentVariableGroup }}
     environment: ${{ parameters.environment }}
     strategy:
