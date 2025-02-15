@@ -37,7 +37,7 @@ jobs:
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters: 
         keyvault_name='$(keyvault_name)'
-        SubnetId='$(subnet_id)'
+        subnet_id='$(subnet_id)'
       
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
