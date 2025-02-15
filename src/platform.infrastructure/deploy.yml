@@ -54,7 +54,7 @@ jobs:
         storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
         container_names='["adf-pipeline-logs"]'
-        ctrl_lifecycleManagement=true
+        ctrl_lifeCycleManagement=true
         isHnsEnabled=true
 
   - template: ../../core/yaml/bicep-deploy.yml
