@@ -52,7 +52,7 @@ jobs:
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters:
         storageaccount_name='$(storageAccount_name)'
-        storage_sku='$(storageAccount_sku)'
+        storageaccount_sku='$(storageAccount_sku)'
         keyvault_name='$(keyvault_name)'
 
 
@@ -68,9 +68,9 @@ jobs:
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters:
         environment="${{ parameters.environment }}"
-        datafactory_name="$(dataFactoryName)"
+        datafactory_name="$(dataFactory_name)"
         keyvault_name='$(keyvault_name)'
-        integrated_runtime_name="integrated_runtime_name"
+        integratedRuntime_name="integratedRuntime_name"
         repositoryName="Framework"
         repositoryType="FactoryGitHubConfiguration"
         repositoryAccountName="chixvio"
@@ -90,6 +90,6 @@ jobs:
 #      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
 #      templatePath: "../bicep/databricks.bicep"
 #      deploymentParameters:
-#        databricksWorkspaceName="$(databricksWorkspaceName)"
+#        databricksWorkspaceName="$(databricksWorkspace_name)"
 #        pricingTier="premium"
 #

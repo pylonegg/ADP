@@ -9,7 +9,7 @@ param keyvault_name string
 
 param managed_vnet_name string = 'default'
 
-param integrated_runtime_name string 
+param integratedRuntime_name string 
 param repositoryName string
 param repositoryType string
 param repositoryAccountName string
@@ -52,8 +52,8 @@ resource DataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
 // }
 // 
 // // Managed Integrated Runtime
-// resource Integrated_Runtime 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
-//   name: integrated_runtime_name
+// resource IntegratedRuntime 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
+//   name: integratedRuntime_name
 //   parent: DataFactory
 //   properties: {
 //     description: 'Managed Private Virtual Network Integrated Runtime'
