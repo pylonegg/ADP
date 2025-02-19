@@ -98,6 +98,20 @@ jobs:
 
   - template: ../../core/yaml/bicep-deploy.yml
     parameters:
+      displayName: "Databricks Workspace Deployment"
+      deploymentName: "DeployDatabricksWorkspace"
+      dependsOn: [DeployDataFactory]
+      resourceGroupName: "$(resourceGroup)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      templatePath: "../bicep/databricks.bicep"
+      deploymentParameters:
+        databricksWorkspaceName="$(databricksWorkspace_name)"
+        pricingTier="premium"
+        
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
       templatePath: "../bicep/rbac.bicep"
       displayName: "Role Assignments"
       deploymentName: "roleAssignments"
@@ -111,19 +125,7 @@ jobs:
         storageaccountBackup_name='$(storageAccountBackup_name)'
         datafactory_name='$(dataFactory_name)'
 
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      displayName: "Databricks Workspace Deployment"
-#      deploymentName: "DeployDatabricksWorkspace"
-#      dependsOn: [DeployStorageAccount]
-#      resourceGroupName: "$(resourceGroup)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      templatePath: "../bicep/databricks.bicep"
-#      deploymentParameters:
-#        databricksWorkspaceName="$(databricksWorkspace_name)"
-#        pricingTier="premium"
+
 
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
