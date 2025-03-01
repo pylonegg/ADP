@@ -70,7 +70,7 @@ jobs:
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters:
         name_prefix='$(name_prefix)'
-        storageaccount_name='$(storageAccountADLS_name)'
+        storageaccount_name='$(storageAccount_name)'
         container_names='["test"]'
         deploy_lifeCycleManagement=false
         isHnsEnabled=true
