@@ -44,7 +44,7 @@ foreach ($assignment in $rbacAssignments) {
         if (-not $existingRoleAssignment) {
             # Assign role
             try {
-                New-AzRoleAssignment -SignInName $user -ObjectId $role -Scope $containerResourceId -ErrorAction Stop
+                New-AzRoleAssignment -ObjectId $user -RoleDefinitionName $role -Scope $containerResourceId -ErrorAction Stop
                 Write-Host "Successfully assigned $role to $user on $container in $StorageAccount"
             } catch {
                 Write-Host "Error assigning $role to $user on $container in $StorageAccount : $_"
