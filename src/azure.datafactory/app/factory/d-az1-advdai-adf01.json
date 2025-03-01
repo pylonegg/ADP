@@ -1,0 +1,9 @@
+{
+	"name": "d-az1-advdai-adf01",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "54c1a5cc-bafb-4ef9-904f-f8bfac8aafd7",
+		"tenantId": "ffd682b2-afb6-4bb2-9c9f-573a10bf18be"
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"name": "StorageAccount",
+	"properties": {
+		"description": "Backup StorageV2 Root Container",
+		"linkedServiceName": {
+			"referenceName": "storagelinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"containers": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "archive"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

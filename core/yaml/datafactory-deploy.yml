@@ -3,7 +3,7 @@ parameters:
     default: ""
   - name: serviceConnection
     default: ""
-  - name: filePath
+  - name: folderPath
     default: ""
   - name: environment
     default: ""
@@ -15,6 +15,8 @@ parameters:
   - name: displayName
     default: ""
   - name: deploymentParameters
+    default: ""
+  - name: resourceGroupName
     default: ""
 
 
@@ -40,24 +42,10 @@ jobs:
               inputs:
                 deploymentName: 'PublishADF'
                 deploymentScope: 'Resource Group'
-                resourceGroupName: '$(ResourceGroupName)'
+                resourceGroupName: ${{ parameters.resourceGroupName }}
                 azureResourceManagerConnection: ${{ parameters.serviceConnection }}
                 templateLocation: 'Linked artifact'
-                location: 'West Europe' # Update <<===================
-                csmFile: '$(Pipeline.Workspace)/drop/src/azure.datafactory/ArmTemplate/ARMTemplateForFactory.json'
-                csmParametersFile: '$(Pipeline.Workspace)/drop/src/azure.datafactory/ArmTemplate/ARMTemplateForFactory-${{ parameters.environment }}.json'
+                location: '$(location)'
+                csmFile: '$(Pipeline.Workspace)/drop/${{ parameters.folderPath }}/ArmTemplate/ARMTemplateForFactory.json'
+                csmParametersFile: '$(Pipeline.Workspace)/drop/${{ parameters.folderPath }}/ArmTemplate/ARMTemplateForFactory-${{ parameters.environment }}.json'
                 deploymentMode: Incremental
-
-
-            # Start Triggers
-            - checkout: self
-              displayName: 'Checkout & Build.Reason: $(Build.Reason) & Build.SourceBranchName: $(Build.SourceBranchName)'
-
-            - task: AzurePowerShell@5
-              displayName: "Start Data Factory Trigger(s)"
-              inputs:
-                azureSubscription: ${{ parameters.serviceConnection }}
-                azurePowerShellVersion: LatestVersion
-                ScriptType: 'InlineScript'
-                Inline: |
-                  $(System.DefaultWorkingDirectory)/${{ parameters.filePath }} ${{ parameters.deploymentParameters }}

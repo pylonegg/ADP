@@ -1,0 +1,27 @@
+{
+	"name": "managed-integrationRuntime",
+	"properties": {
+		"type": "Managed",
+		"typeProperties": {
+			"computeProperties": {
+				"location": "West Europe",
+				"dataFlowProperties": {
+					"computeType": "General",
+					"coreCount": 16,
+					"timeToLive": 10,
+					"cleanup": false,
+					"customProperties": []
+				},
+				"pipelineExternalComputeScaleProperties": {
+					"timeToLive": 60,
+					"numberOfPipelineNodes": 2,
+					"numberOfExternalNodes": 2
+				}
+			}
+		},
+		"managedVirtualNetwork": {
+			"type": "ManagedVirtualNetworkReference",
+			"referenceName": "default"
+		}
+	}
+}

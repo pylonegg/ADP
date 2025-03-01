@@ -1,4 +1,11 @@
-trigger: none
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - src/azure.datafactory/*
 stages: 
   - template: ../../src/environments.yml
     parameters:

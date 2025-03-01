@@ -1,0 +1,15 @@
+# The main job for dbx.
+resources:
+
+  clusters:
+    demo_cluster:
+      cluster_name: "Advisory Shared Cluster"
+      num_workers: 2
+      node_type_id: "Standard_DS3_v2"
+      autotermination_minutes: 30
+      autoscale: 
+        min_workers: 2
+        max_workers: 10
+      spark_version: "15.4.x-scala2.12"
+      spark_conf: ${var.spark_configuration}
+      data_security_mode: USER_ISOLATION

@@ -15,7 +15,7 @@ stages:
       - template: ${{ parameters.buildTemplatePath }}
         parameters:
          serviceConnection: "Pylonegg - Dev"
-         environmentVariableGroup: "Data Platform Dev"
+         environmentVariableGroup: "Advisory_Platform_Dev"
 
   - stage: DEV
     displayName: DEV
@@ -26,15 +26,15 @@ stages:
         parameters:
           environment: "dev"
           serviceConnection: "Pylonegg - Dev"
-          environmentVariableGroup: "Data Platform Dev"
+          environmentVariableGroup: "Advisory_Platform_Dev"
 
-#  - stage: DEV
-#    displayName: DEV
-#    dependsOn: [Build]
-#    condition: or(succeeded(), eq(${{ parameters.skipBuild }}, 'true')) # Run if skipBuild is true OR Build Succeeds
+#  - stage: TEST
+#    displayName: TEST
+#    dependsOn: [DEV]
+#    condition: succeeded('DEV')
 #    jobs:
 #      - template: "${{ parameters.deployTemplatePath }}"
 #        parameters:
-#          environment: "dev"
+#          environment: "test"
 #          serviceConnection: "UK Advisory Dev Test"
-#          environmentVariableGroup: "Advisory_Platform_Dev"
+#          environmentVariableGroup: "Advisory_Platform_Test"

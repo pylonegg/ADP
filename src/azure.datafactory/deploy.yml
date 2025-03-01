@@ -21,7 +21,10 @@ jobs:
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       filePath: "src/azure.datafactory/datafactory.ps1"
+      dataFactoryName: "$(datafactory_name)"
+      resourceGroupName: "$(resourceGroup_name)"
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
-        -DataFactoryName "$(Datafactory_Name)"
-        -ResourceGroupName "$(ResourceGroupName)"
+        -DataFactoryName "$(datafactory_name)"
+        -ResourceGroupName "$(resourceGroup_name)"
+        -triggerStatus "$(datafactoryTriggers_status)"

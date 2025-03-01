@@ -1,0 +1,34 @@
+{
+  "terraform": {
+    "required_providers": {
+      "databricks": {
+        "source": "databricks/databricks",
+        "version": "1.62.0"
+      }
+    }
+  },
+  "provider": {
+    "databricks": {}
+  },
+  "resource": {
+    "databricks_cluster": {
+      "demo_cluster": {
+        "autoscale": {
+          "max_workers": 10,
+          "min_workers": 2
+        },
+        "autotermination_minutes": 10,
+        "cluster_name": "Advisory Shared Cluster",
+        "custom_tags": {},
+        "data_security_mode": "USER_ISOLATION",
+        "no_wait": true,
+        "node_type_id": "Standard_DS3_v2",
+        "num_workers": 2,
+        "spark_conf": {
+          "spark.hadoop.fs.azure.account.oauth2.client.endpoint.${${var.adls_name}}.dfs.core.windows.net": "https://login.microsoftonline.com/ffd682b2-afb6-4bb2-9c9f-573a10bf18be/oauth2/token spark.hadoop.fs.azure.account.oauth2.client.secret.daz1advdaiadls01.dfs.core.windows.net  {{secrets/BlobStorage/ADLS_SPN}} spark.hadoop.fs.azure.account.oauth2.client.id.daz1advdaiadls01.dfs.core.windows.net 60245495-9fc5-44c2-ab1d-fa3fb5646955"
+        },
+        "spark_version": "15.4.x-scala2.12"
+      }
+    }
+  }
+}

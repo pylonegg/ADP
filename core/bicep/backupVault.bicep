@@ -1,12 +1,16 @@
+@description('Resource name prefix')
+param name_prefix string
+
 @description('Name of the Vault')
-param vault_name string
+param vault_name            string = '${name_prefix}-vault01'
+
 
 @description('Change Vault Storage Type (not allowed if the vault has registered backups)')
 @allowed([
   'LocallyRedundant'
   'GeoRedundant'
 ])
-param vaultStorageRedundancy string
+param vaultStorageRedundancy string = 'LocallyRedundant'
 
 @description('BackUp / Rentention policy name')
 param backupPolicy_name string = 'GoldPolicy'
@@ -35,7 +39,7 @@ resource Backup_Vault 'Microsoft.DataProtection/BackupVaults@2023-05-01' = {
   name: vault_name
   location: resourceGroup().location
   identity: {
-    type: 'systemAssigned'
+    type: 'SystemAssigned'
   }
   properties: {
     storageSettings: [
@@ -125,10 +129,3 @@ resource Backup_Policy 'Microsoft.DataProtection/backupVaults/backupPolicies@202
 
   }
 }
-
-// Outputs
-output backupVaultID string = Backup_Vault.id
-output backupVaultPrincipleID string = Backup_Vault.identity.principalId
-output backupPolicy_ID string = Backup_Policy.id
-output backupVaultName string = Backup_Vault.name
-output backupPolicyName string = Backup_Policy.name

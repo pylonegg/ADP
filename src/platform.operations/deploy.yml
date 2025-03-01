@@ -1,0 +1,28 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: deploymentParameters
+    default: ""
+
+jobs:
+# Deploy Azure KeyVault   
+  - template: ../../core/yaml/powershell-deploy.yml
+    parameters:
+      displayName: "Assign RBAC"
+      deploymentName: "AssignRBAC"
+      dependsOn: []
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      filePath: "src/platform.operations/rbac/rbac_assignment.ps1"
+      deploymentParameters:
+        -Environment "${{ parameters.environment }}"
+        -StorageAccount "$(storageAccountADLS_name)"
+        -ResourceGroupName "$(resourceGroup_name)"
+        -SubscriptionId "$(subscription_id)"

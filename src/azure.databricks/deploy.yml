@@ -11,7 +11,7 @@ parameters:
     default: ""
 
 jobs:
-# Deploy Azure KeyVault   
+# Deploy Databricks   
   - template: ../../core/yaml/databricks-deploy.yml
     parameters:
       displayName: "Databricks Deployment"
@@ -24,8 +24,8 @@ jobs:
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
         -DatabricksToken "$(DATABRICKS_TOKEN)"
-        -DatabricksHost "$(DATABRICKS_HOST)"
-        -ClusterName "$(cluster_name)"
+        -DatabricksHost "$(databricks_host)"
+        -ClusterName "$(databricksCluster_name)"
         -KeyVaultName "$(keyvault_name)"
         -KeyVaultResourceID "$(keyvault_resource_id)"
         -ADLS_SPN "$(ADLS_SPN)"

@@ -41,7 +41,7 @@ jobs:
                 inlineScript: |
                   az --version
                   az deployment group create \
-                  --name ${{ parameters.deploymentName }} \
-                  --resource-group "${{ parameters.resourceGroupName }}" \
-                  --template-file '${{ parameters.templatePath }}' \
+                  --name "${{ parameters.deploymentName }}" \
+                  --resource-group ${{ parameters.resourceGroupName }} \
+                  --template-file ${{ parameters.templatePath }} \
                   --parameters ${{ parameters.deploymentParameters }}
