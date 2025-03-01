@@ -1,8 +1,5 @@
-@description('Resource name prefix')
-param name_prefix string
-
 @description('key vault name.')
-param keyvault_name           string = '${name_prefix}-kv01'
+param keyvault_name           string
 
 // Key Vault Resource
 resource KeyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {

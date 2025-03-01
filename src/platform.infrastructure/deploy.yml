@@ -43,20 +43,20 @@ jobs:
 #      deploymentParameters:
 #        name_prefix='$(name_prefix)'
 #
-## KEY VAULT
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      templatePath: "../bicep/keyvault.bicep"
-#      displayName: "Deploy Keyvault"
-#      deploymentName: "DeployKeyvault"
-#      dependsOn: [DeployVirtualNetwork]
-#      resourceGroupName: "$(resourceGroup_name)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      deploymentParameters:
-#        name_prefix='$(name_prefix)'
-#
+# KEY VAULT
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/keyvault.bicep"
+      displayName: "Deploy Keyvault"
+      deploymentName: "DeployKeyvault"
+      dependsOn: [DeployVirtualNetwork]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        keyvault_name='$(keyvault_name)'
+
 ## STORAGE ACCOUNT (DATALAKE)
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:
@@ -122,7 +122,8 @@ jobs:
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       deploymentParameters:
-        name_prefix='$(name_prefix)'
+        keyvault_name='$(keyvault_name)'
+        datafactory_name='$(datafactory_name)'
 
 ## NETWORK RULES
 #  - template: ../../core/yaml/bicep-deploy.yml

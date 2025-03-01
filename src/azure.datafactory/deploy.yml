@@ -20,9 +20,23 @@ jobs:
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      filePath: "src/azure.datafactory/datafactory.ps1"
+      folderPath: "src/azure.datafactory/app"
       dataFactoryName: "$(datafactory_name)"
       resourceGroupName: "$(resourceGroup_name)"
+
+
+
+  - template: ../../core/yaml/powershell-deploy.yml
+    parameters:
+      displayName: "Deploy DataFactory Artifacts"
+      deploymentName: "DeployDataFactoryArtifacts"
+      dependsOn: []
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      filePath: "core/powershell/datafactory/datafactory.ps1"
+      dataFactoryName: "$(datafactory_name)"
+      resourceGroupName: "$(resourceGroup_name)"      
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
         -DataFactoryName "$(datafactory_name)"

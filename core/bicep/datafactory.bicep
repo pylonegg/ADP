@@ -1,8 +1,6 @@
 @description('Resource name prefix.')
-param name_prefix string 
-
-param keyvault_name           string = '${name_prefix}-kv01'
-param datafactory_name        string = '${name_prefix}-adf01'
+param keyvault_name           string
+param datafactory_name        string
 
 
 // Data Factory Resource
