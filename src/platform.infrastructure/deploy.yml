@@ -57,24 +57,24 @@ jobs:
       deploymentParameters:
         keyvault_name='$(keyvault_name)'
 
-## STORAGE ACCOUNT (DATALAKE)
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      templatePath: "../bicep/storageAccount.bicep"
-#      displayName: "Deploy ADLS Storage Account"
-#      deploymentName: "DeployADLS"
-#      dependsOn: [DeployKeyvault, DeployBackupVault]
-#      resourceGroupName: "$(resourceGroup_name)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      deploymentParameters:
-#        name_prefix='$(name_prefix)'
-#        storageaccount_name='$(storageAccountADLS_name)'
-#        container_names='["adf-pipeline-logs"]'
-#        deploy_lifeCycleManagement=true
-#        isHnsEnabled=true
-#        deploy_BackupInstance=false
+# STORAGE ACCOUNT (DATALAKE)
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/storageAccount.bicep"
+      displayName: "Deploy ADLS Storage Account"
+      deploymentName: "DeployADLS"
+      dependsOn: [DeployKeyvault, DeployBackupVault]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        name_prefix='$(name_prefix)'
+        storageaccount_name='$(storageAccountADLS_name)'
+        container_names='["test]'
+        deploy_lifeCycleManagement=false
+        isHnsEnabled=true
+        deploy_BackupInstance=false
 #
 ## STORAGE ACCOUNT (BACKUP)
 #  - template: ../../core/yaml/bicep-deploy.yml

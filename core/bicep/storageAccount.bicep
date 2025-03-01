@@ -1,8 +1,8 @@
 @description('Resource name prefix')
 param name_prefix string
 
-param keyvault_name               string = '${name_prefix}-kv01'
-param backupVault_name            string = '${name_prefix}-vault01'
+param keyvault_name               string = '${name_prefix}-kv'
+param backupVault_name            string = '${name_prefix}-vault'
 
 
 @description('Storage Account Name.')
