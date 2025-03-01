@@ -39,7 +39,7 @@ foreach ($assignment in $rbacAssignments) {
         $containerResourceId = "$StorageAccountId/blobServices/default/containers/$container"
 
         # Check if the role assignment already exists
-        $existingRoleAssignment = Get-AzRoleAssignment -SignInName $user -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
+        $existingRoleAssignment = Get-AzRoleAssignment PrincipalId $user -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
 
         if (-not $existingRoleAssignment) {
             # Assign role
