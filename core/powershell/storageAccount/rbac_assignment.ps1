@@ -20,8 +20,10 @@ foreach ($assignment in $rbacAssignments) {
     write-host $StorageAccountResource
 
     if ($StorageAccountResource) {
-        # Get Storage Account Context
-        $storageContext = $StorageAccountResource.Context
+
+        # Create a context object using Azure AD credentials, retrieve container
+        $storageContext = New-AzStorageContext -StorageAccountName $StorageAccount -UseConnectedAccount
+
 
         # Check if the container exists, if not, create it
         $containerExists = Get-AzStorageContainer -Context $storageContext -Name $container -ErrorAction SilentlyContinue
