@@ -23,7 +23,7 @@ jobs:
     displayName: ${{parameters.displayName}}
     dependsOn: ${{ parameters.dependsOn }}
     pool:
-      vmImage: "ubuntu-latest"
+      vmImage: "windows-latest"
     variables:
       - group: ${{ parameters.environmentVariableGroup }}
     environment: ${{ parameters.environment }}
