@@ -20,7 +20,7 @@ jobs:
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      filePath: "../../core/powershell/storageAccount/rbac/rbac_assignment.ps1"
+      filePath: "../../core/powershell/storageAccount/rbac_assignment.ps1"
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
         -StorageAccount "$(storageAccountADLS_name)"
