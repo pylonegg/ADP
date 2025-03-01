@@ -49,7 +49,7 @@ jobs:
       templatePath: "../bicep/keyvault.bicep"
       displayName: "Deploy Keyvault"
       deploymentName: "DeployKeyvault"
-      dependsOn: [DeployVirtualNetwork]
+      dependsOn: [] #DeployVirtualNetwork
       resourceGroupName: "$(resourceGroup_name)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
@@ -116,7 +116,7 @@ jobs:
       templatePath: "../bicep/datafactory.bicep"
       displayName: "Deploy Data Factory"
       deploymentName: "DeployDataFactory"
-      dependsOn: [] #[DeploySQLServer]
+      dependsOn: [DeployKeyvault] #[DeploySQLServer]
       resourceGroupName: "$(resourceGroup_name)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
