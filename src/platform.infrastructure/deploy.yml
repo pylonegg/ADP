@@ -71,7 +71,7 @@ jobs:
       deploymentParameters:
         name_prefix='$(name_prefix)'
         storageaccount_name='$(storageAccountADLS_name)'
-        container_names='["test]'
+        container_names='["test"]'
         deploy_lifeCycleManagement=false
         isHnsEnabled=true
         deploy_BackupInstance=false
