@@ -38,8 +38,10 @@ foreach ($assignment in $rbacAssignments) {
         $StorageAccountId = $StorageAccountResource.Id
         $containerResourceId = "$StorageAccountId/blobServices/default/containers/$container"
 
+
+        $ObjectId = (Get-AzADUser -UserPrincipalName "$user").Id
         # Check if the role assignment already exists
-        $existingRoleAssignment = Get-AzRoleAssignment -ObjectId $user -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
+        $existingRoleAssignment = Get-AzRoleAssignment -ObjectId $ObjectId -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
 
         if (-not $existingRoleAssignment) {
             # Assign role
