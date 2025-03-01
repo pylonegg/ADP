@@ -63,7 +63,7 @@ jobs:
       templatePath: "../bicep/storageAccount.bicep"
       displayName: "Deploy ADLS Storage Account"
       deploymentName: "DeployADLS"
-      dependsOn: [DeployKeyvault, DeployBackupVault]
+      dependsOn: [DeployKeyvault]
       resourceGroupName: "$(resourceGroup_name)"
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
