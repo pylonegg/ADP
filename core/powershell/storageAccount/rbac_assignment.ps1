@@ -5,26 +5,24 @@ param (
 )
 
 # Step 1: Get the Public IP of the Current Session
-#$publicIP = (Invoke-RestMethod -Uri "https://api.ipify.org?format=json").ip
-#Write-Output "Current Public IP: $publicIP"
-
-# Get all network adapters and filter for active ones
-$privateIP = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch "Loopback" }).IPAddress
-Write-Output "Private IP Address of DevOps Agent: $privateIP"
-
+$publicIP = (Invoke-RestMethod -Uri "https://api.ipify.org?format=json").ip
+Write-Output "Current Public IP: $publicIP"
 
 # Step 2: Add the Public IP to Storage Account Network Rules
-Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $StorageAccount -IpAddressOrRange $privateIP
-Write-Output "Added $privateIP to Storage Account Network Rules"
+Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $StorageAccount -IpAddressOrRange $publicIP
+Write-Output "Added $publicIP to Storage Account Network Rules"
+
+Start-Sleep -seconds 60
+Write-Output "Waiting for 60 seconds"
 
 # Step 3: Validate that the IP has been added
 $networkRules = Get-AzStorageAccountNetworkRuleSet -ResourceGroupName $ResourceGroupName -Name $StorageAccount
 
 # Check if the IP exists in the allowed list
-if ($networkRules.IpRules.IpAddressOrRange -contains $privateIP) {
-    Write-Output "Validation successful: $privateIP is in the storage account network rules."
+if ($networkRules.IpRules.IpAddressOrRange -contains $publicIP) {
+    Write-Output "Validation successful: $publicIP is in the storage account network rules."
 } else {
-    Write-Output "Validation failed: $privateIP was NOT added to the network rules."
+    Write-Output "Validation failed: $publicIP was NOT added to the network rules."
 }
 
 # Import CSV
