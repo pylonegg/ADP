@@ -4,6 +4,23 @@ param (
     [string]$StorageAccount
 )
 
+# Step 1: Get the Public IP of the Current Session
+$publicIP = (Invoke-RestMethod -Uri "https://api.ipify.org?format=json").ip
+Write-Output "Current Public IP: $publicIP"
+
+# Step 2: Add the Public IP to Storage Account Network Rules
+Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $StorageAccount -IpAddressOrRange $publicIP
+Write-Output "Added $publicIP to Storage Account Network Rules"
+
+# Step 3: Validate that the IP has been added
+$networkRules = Get-AzStorageAccountNetworkRuleSet -ResourceGroupName $ResourceGroupName -Name $StorageAccount
+
+# Check if the IP exists in the allowed list
+if ($networkRules.IpRules.IpAddressOrRange -contains $publicIP) {
+    Write-Output "Validation successful: $publicIP is in the storage account network rules."
+} else {
+    Write-Output "Validation failed: $publicIP was NOT added to the network rules."
+}
 
 # Import CSV
 $rbacAssignments = Join-Path -Path $PSScriptRoot -ChildPath "../../../src/platform.operations/app/rbac_assignment.csv" | Import-Csv 
@@ -17,7 +34,6 @@ foreach ($assignment in $rbacAssignments) {
 
     # Get Storage Account resource
     $StorageAccountResource = Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccount
-    write-host $StorageAccountResource
 
     if ($StorageAccountResource) {
 
@@ -39,9 +55,9 @@ foreach ($assignment in $rbacAssignments) {
         $containerResourceId = "$StorageAccountId/blobServices/default/containers/$container"
 
 
-        $ObjectId = (Get-AzADUser -UserPrincipalName "$user").Id
+        #$ObjectId = (Get-AzADUser -UserPrincipalName "$user").Id
         # Check if the role assignment already exists
-        $existingRoleAssignment = Get-AzRoleAssignment -ObjectId $ObjectId -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
+        $existingRoleAssignment = Get-AzRoleAssignment -ObjectId $user -Scope $containerResourceId -ErrorAction SilentlyContinue | Where-Object { $_.RoleDefinitionName -eq $role }
 
         if (-not $existingRoleAssignment) {
             # Assign role
