@@ -20,7 +20,7 @@ jobs:
       environment: "${{ parameters.environment }}"
       serviceConnection: "${{ parameters.serviceConnection }}"
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-      filePath: "src/azure.databricks/databricks.ps1"
+      filePath: "core/powershell/databricks/databricks.ps1"
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
         -DatabricksToken "$(DATABRICKS_TOKEN)"

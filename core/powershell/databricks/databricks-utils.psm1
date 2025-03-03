@@ -23,7 +23,9 @@ function Install-ConfigureCLI {
     Write-Host "Configuring Databricks CLI..."
     $databricksConfig = "$DatabricksHost`n$DatabricksToken"
 
-    $databricksConfig | databricks configure --token
+    # $databricksConfig | databricks configure --token
+
+    databricks configure --token $databricksConfig --host $DatabricksHost,
     Write-Host "Databricks CLI configured successfully!"
 }
 
