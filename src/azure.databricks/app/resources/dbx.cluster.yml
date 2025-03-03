@@ -3,7 +3,7 @@ resources:
 
   clusters:
     demo_cluster:
-      cluster_name: ${var.spark_configuration}
+      cluster_name: ${var.cluster_name}
       num_workers: 2
       node_type_id: "Standard_DS3_v2"
       autotermination_minutes: 30
