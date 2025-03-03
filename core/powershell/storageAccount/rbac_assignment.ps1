@@ -1,32 +1,13 @@
 param (
     [string]$Environment,
     [string]$ResourceGroupName,
-    [string]$StorageAccount
+    [string]$StorageAccount,
+    [string]$filePath
 )
 
-# Step 1: Get the Public IP of the Current Session
-$publicIP = (Invoke-RestMethod -Uri "https://api.ipify.org?format=json").ip
-Write-Output "Current Public IP: $publicIP"
-
-# Step 2: Add the Public IP to Storage Account Network Rules
-Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $StorageAccount -IpAddressOrRange $publicIP
-Write-Output "Added $publicIP to Storage Account Network Rules"
-
-Start-Sleep -seconds 60
-Write-Output "Waiting for 60 seconds"
-
-# Step 3: Validate that the IP has been added
-$networkRules = Get-AzStorageAccountNetworkRuleSet -ResourceGroupName $ResourceGroupName -Name $StorageAccount
-
-# Check if the IP exists in the allowed list
-if ($networkRules.IpRules.IpAddressOrRange -contains $publicIP) {
-    Write-Output "Validation successful: $publicIP is in the storage account network rules."
-} else {
-    Write-Output "Validation failed: $publicIP was NOT added to the network rules."
-}
 
 # Import CSV
-$rbacAssignments = Join-Path -Path $PSScriptRoot -ChildPath "../../../src/platform.operations/app/rbac_assignment.csv" | Import-Csv 
+$rbacAssignments = Join-Path -Path $PSScriptRoot -ChildPath $filePath | Import-Csv 
 
 # Loop through each row in the CSV
 foreach ($assignment in $rbacAssignments) {

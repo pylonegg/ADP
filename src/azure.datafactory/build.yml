@@ -22,3 +22,4 @@ jobs:
       environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
       dataFactoryName: "$(datafactory_name)"
       resourceGroupName: "$(resourceGroup_name)"
+      folderPath: "src/azure.datafactory/app"
