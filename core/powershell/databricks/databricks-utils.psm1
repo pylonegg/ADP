@@ -11,6 +11,7 @@
 function Replace-Parameters {
 param (
     [string]$DatabricksHost,
+    [string]$ClusterName,
     [string]$filePath
 )
 
@@ -33,7 +34,8 @@ $yamlObject = Get-Content -Path $filePath -Raw | ConvertFrom-YAML
 # Perform replacements
 # ----------------------------------------------------------
 $yamlObject.targets.env.workspace.host = $DatabricksHost
-
+$yamlObject.targets.env.variables.cluster_name = $ClusterName
+$yamlObject.targets.env.variables.spark_configuration = ""
 #-----------------------------------------------------------
 
 # Convert back to YAML

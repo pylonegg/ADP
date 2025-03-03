@@ -22,8 +22,9 @@ Join-Path -Path $PSScriptRoot -ChildPath "databricks-utils.psm1" | Import-Module
 
 # Replace databricks.yml variables
 $replacementPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../src/azure.databricks/app/databricks.yml" 
-Replace-Parameters -DatabricksHost $DatabricksHost -filePath $replacementPath
+Replace-Parameters -DatabricksHost $DatabricksHost -filePath $replacementPath -ClusterName $ClusterName
 
+# Configure Databricks CLI
 Install-ConfigureCLI -DatabricksHost $DatabricksHost -DatabricksToken -$DatabricksToken
 
 #Assign-MetastoreToWorkspace -WorkspaceId "" -MetastoreId ""

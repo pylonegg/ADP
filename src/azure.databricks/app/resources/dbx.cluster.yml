@@ -3,7 +3,7 @@ resources:
 
   clusters:
     demo_cluster:
-      cluster_name: "Advisory Shared Cluster"
+      cluster_name: ${var.spark_configuration}
       num_workers: 2
       node_type_id: "Standard_DS3_v2"
       autotermination_minutes: 30
