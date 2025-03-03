@@ -24,7 +24,7 @@ jobs:
       deploymentParameters:
         -Environment "${{ parameters.environment }}"
         -DatabricksToken "$(DATABRICKS_TOKEN)"
-        -DatabricksHost "$(databricks_host)"
+        -DatabricksHost "$(DATABRICKS_HOST)"
         -ClusterName "$(databricksCluster_name)"
         -KeyVaultName "$(keyvault_name)"
         -KeyVaultResourceID "$(keyvault_resource_id)"

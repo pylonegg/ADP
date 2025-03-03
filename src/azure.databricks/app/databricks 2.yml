@@ -1,0 +1,29 @@
+# This is a Databricks asset bundle definition for dbx.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: dbx
+
+include:
+  - resources/*.yml
+
+variables:
+  spark_configuration: 
+    default: ""
+
+permissions:
+  - level: CAN_MANAGE
+    group_name: "admins"
+  - level: CAN_MANAGE
+    group_name: "Ops Admins"
+
+targets:
+  env:
+    default: true
+    workspace:
+      host: https://adb-xxxxxxxxxx.x.azuredatabricks.net/
+      root_path: /Shared/dbx
+    variables:
+      spark_configuration: {
+        "spark.hadoop.fs.azure.account.oauth2.client.endpoint.daz1advdaiadls01.dfs.core.windows.net": "https://login.microsoftonline.com/ffd682b2-afb6-4bb2-9c9f-573a10bf18be/oauth2/token spark.hadoop.fs.azure.account.oauth2.client.secret.daz1advdaiadls01.dfs.core.windows.net  {{secrets/BlobStorage/ADLS_SPN}} spark.hadoop.fs.azure.account.oauth2.client.id.daz1advdaiadls01.dfs.core.windows.net 60245495-9fc5-44c2-ab1d-fa3fb5646955",
+        "spark.hadoop.fs.azure.account.auth.type.daz1advdaiadls01.dfs.core.windows.net": "OAuth"
+      }
