@@ -6,6 +6,41 @@
 #=====================================|=======================================
 
 
+function Replace-Parameters {
+param (
+    [string]$DatabricksHost,
+    [string]$filePath
+)
+
+# Ensure the PowerShell YAML module is installed and imported
+if (-not (Get-Module -Name powershell-yaml -ListAvailable)) {
+    Install-Module -Name powershell-yaml -Force -Verbose -Scope CurrentUser
+}
+Import-Module powershell-yaml
+
+# Check if the YAML file exists
+if (-Not (Test-Path $filePath)) {
+    Write-Error "Error: File '$filePath' not found. Ensure the path is correct."
+    exit 1
+}
+
+# Load YAML content and convert it to a PowerShell object
+$yamlObject = Get-Content -Path $filePath -Raw | ConvertFrom-YAML
+
+
+# Perform replacements
+# ----------------------------------------------------------
+$yamlObject.targets.env.workspace.host = $DatabricksHost
+
+#-----------------------------------------------------------
+
+# Convert back to YAML
+$updatedYaml = ConvertTo-YAML $yamlObject
+Set-Content -Path $filePath -Value $updatedYaml
+}
+
+
+
 # ----------------------------------------- #
 # Install and configure databriks CLI
 # ----------------------------------------- #
@@ -23,9 +58,8 @@ function Install-ConfigureCLI {
     Write-Host "Configuring Databricks CLI..."
     $databricksConfig = "$DatabricksHost`n$DatabricksToken"
 
-    # $databricksConfig | databricks configure --token
+    $databricksConfig | databricks configure --token
 
-    databricks configure --token $databricksConfig --host $DatabricksHost,
     Write-Host "Databricks CLI configured successfully!"
 }
 
@@ -34,17 +68,13 @@ function Install-ConfigureCLI {
 # ----------------------------------------- #
 function Deploy-DatabricksBundle {
     param (
-        [string]$Environment
     )
 
    Write-Host "`n======================== DEPLOYING DATABRICKS BUNDLE! ========================"
     # Validate Databricks bundle
-    databricks bundle validate -t $Environment
-    Write-Host "$Environment databricks bundle validated!"
-
+    databricks bundle validate
     # Deploy Databricks bundle
-    databricks bundle deploy -t $Environment
-    Write-Host "databricks bundle deployed successfully to $Environment!"
+    databricks bundle deploy
 }
 
 # ----------------------------------------- #
@@ -66,11 +96,10 @@ function Add-MetastoreToWorkspace {
 # ----------------------------------------- #
 function Get-ClusterIdByName {
     param(
-        [String]$ClusterName,
-        [string]$Environment
+        [String]$ClusterName
     )
 
-    $clusters = databricks clusters list -t $Environment -o json | ConvertFrom-Json | Where-Object { $_.cluster_name -eq $ClusterName }
+    $clusters = databricks clusters list -o json | ConvertFrom-Json | Where-Object { $_.cluster_name -eq $ClusterName }
     if (-not $clusters){
         Write-Error "Cluster `"$ClusterName`" does not exist!"
     }
@@ -86,8 +115,7 @@ function Get-ClusterIdByName {
 function Install-ClusterLibraries {
     param(
         [String]$ClusterName,
-        [String]$RequirementsFilePath,
-        [string]$Environment
+        [String]$RequirementsFilePath
     )
 
     Write-Host "`n==================== ADDING requirements.txt TO CLUSTER! ====================="
@@ -101,7 +129,7 @@ function Install-ClusterLibraries {
     "libraries": [{"requirements": "$RequirementsFilePath"}]
 }
 "@
-    databricks libraries install -t $Environment --json $jsonPayload
+    databricks libraries install --json $jsonPayload
     Write-Host "Requirements path $RequirementsFilePath successfully added to `"$ClusterName`" library"
 }
 

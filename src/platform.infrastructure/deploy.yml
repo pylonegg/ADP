@@ -142,22 +142,22 @@ jobs:
 #        centralVirtualNetwork_name='$(vnet_name)'
 #        virtualNetwork_name='$(databricksVnet_name)'
 #
-## DATABRICKS
-#  - template: ../../core/yaml/bicep-deploy.yml
-#    parameters:
-#      templatePath: "../bicep/databricks.bicep"
-#      displayName: "Deploy Databricks Workspace"
-#      deploymentName: "DeployDatabricksWorkspace"
-#      dependsOn: [ApplyNetworkingRules]
-#      resourceGroupName: "$(resourceGroup_name)"
-#      environment: "${{ parameters.environment }}"
-#      serviceConnection: "${{ parameters.serviceConnection }}"
-#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
-#      deploymentParameters:
-#        name_prefix='$(name_prefix)'
-#        virtualNetwork_name='$(databricksVnet_name)'
-#
-#
+# DATABRICKS
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/databricks.bicep"
+      displayName: "Deploy Databricks Workspace"
+      deploymentName: "DeployDatabricksWorkspace"
+      dependsOn: [ApplyNetworkingRules]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        name_prefix='$(name_prefix)'
+        virtualNetwork_name='$(databricksVnet_name)'
+
+
 ## RBAC
 #  - template: ../../core/yaml/bicep-deploy.yml
 #    parameters:

@@ -8,30 +8,34 @@
 param (
     [string]$DatabricksHost,
     [string]$DatabricksToken,
-    [string]$Environment,
     [string]$ClusterName,
     [string]$KeyVaultName,
     [string]$KeyVaultResourceID,
     [string]$ADLS_SPN
 )
 
-Join-Path -Path $PSScriptRoot -ChildPath "../../core/powershell/databricks-utils.psm1" | Import-Module
+Join-Path -Path $PSScriptRoot -ChildPath "../../core/powershell/databricks/databricks-utils.psm1" | Import-Module
 
 # --------------------------------------------------------------------------------------------------
 # Create a function in core/powershell/databricks-utils.psm1 and call it here!
 # --------------------------------------------------------------------------------------------------
 
+# Replace databricks.yml variables
+$replacementPath = Join-Path -Path $PSScriptRoot -ChildPath "../../src/azure.databricks/app/databricks.yml" 
+Replace-Parameters -DatabricksHost $DatabricksHost -filePath $replacementPath
+
 Install-ConfigureCLI -DatabricksHost $DatabricksHost -DatabricksToken -$DatabricksToken
 
 #Assign-MetastoreToWorkspace -WorkspaceId "" -MetastoreId ""
 
-cd src/azure.databricks
+# Change working directory to bundle root.
+cd src/azure.databricks/app
 
-Deploy-DatabricksBundle -Environment $Environment
+# Deploy databricks bundle
+Deploy-DatabricksBundle
 
-Write-Host $x
 # Add requirements.txt to 
-Install-ClusterLibraries -ClusterName $ClusterName -Environment $Environment -RequirementsFilePath "/Workspace/Shared/dbx/files/config/requirements.txt"
+Install-ClusterLibraries -ClusterName $ClusterName -RequirementsFilePath "/Workspace/Shared/dbx/files/config/requirements.txt"
 
 # Create Keyvault backed Scope
 Add-AzureKeyVaultBackedScope -ScopeName "scope-advdai-$Environment" -KeyVaultName $KeyVaultName -ResourceID $KeyVaultResourceID
