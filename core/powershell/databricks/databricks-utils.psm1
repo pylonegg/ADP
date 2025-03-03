@@ -72,9 +72,9 @@ function Deploy-DatabricksBundle {
 
    Write-Host "`n======================== DEPLOYING DATABRICKS BUNDLE! ========================"
     # Validate Databricks bundle
-    databricks bundle validate
+    databricks bundle validate -t "env"
     # Deploy Databricks bundle
-    databricks bundle deploy
+    databricks bundle deploy -t "env"
 }
 
 # ----------------------------------------- #
