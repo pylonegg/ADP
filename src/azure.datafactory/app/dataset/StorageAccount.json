@@ -1,7 +1,7 @@
 {
 	"name": "StorageAccount",
 	"properties": {
-		"description": "Backup StorageV2 Root Container",
+		"description": "",
 		"linkedServiceName": {
 			"referenceName": "storagelinkedService",
 			"type": "LinkedServiceReference"
