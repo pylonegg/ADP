@@ -1,0 +1,29 @@
+# This is a Databricks asset bundle definition for dbx.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: dbx
+
+include:
+  - resources/*.yml
+
+variables:
+  spark_configuration: 
+    default: ""
+  cluster_name: 
+    default: ""
+
+permissions:
+  - level: CAN_MANAGE
+    group_name: "admins"
+  - level: CAN_MANAGE
+    group_name: "Ops Admins"
+
+targets:
+  env:
+    default: true
+    workspace:
+      host: ""
+      root_path: /Shared/dbx
+    variables:
+      spark_configuration: ""
+      cluster_name: ""

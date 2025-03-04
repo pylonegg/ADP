@@ -1,0 +1,44 @@
+parameters:
+  - name: deploymentName
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: filePath
+    default: ""
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: dependsOn
+    type: object
+    default: []
+  - name: displayName
+    default: ""
+  - name: deploymentParameters
+    default: ""
+
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{parameters.displayName}}
+    dependsOn: ${{ parameters.dependsOn }}
+    pool:
+      vmImage: "windows-latest"
+    variables:
+      - group: ${{ parameters.environmentVariableGroup }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+              displayName: 'Checkout & Build.Reason: $(Build.Reason) & Build.SourceBranchName: $(Build.SourceBranchName)'
+
+            - task: AzurePowerShell@5
+              displayName: 'Deploy Powershell'
+              inputs:
+                azureSubscription: ${{ parameters.serviceConnection }}
+                azurePowerShellVersion: LatestVersion
+                ScriptType: 'InlineScript'
+                Inline: |
+                  $(System.DefaultWorkingDirectory)/${{ parameters.filePath }} ${{ parameters.deploymentParameters }}

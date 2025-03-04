@@ -1,0 +1,7 @@
+trigger: none
+stages: 
+  - template: ../../src/environments.yml
+    parameters:
+      skipBuild: true
+      buildTemplatePath:  azure.databricks/build.yml
+      deployTemplatePath: azure.databricks/deploy.yml

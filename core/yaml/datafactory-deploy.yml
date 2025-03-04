@@ -1,0 +1,51 @@
+parameters:
+  - name: deploymentName
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: folderPath
+    default: ""
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: dependsOn
+    type: object
+    default: []
+  - name: displayName
+    default: ""
+  - name: deploymentParameters
+    default: ""
+  - name: resourceGroupName
+    default: ""
+
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{parameters.displayName}}
+    dependsOn: ${{ parameters.dependsOn }}
+    pool:
+      vmImage: "ubuntu-latest"
+    variables:
+      - group: ${{ parameters.environmentVariableGroup }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: current
+              artifact: drop
+
+            # Deploy ADF
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: 'Deploy Data Factory Artifacts'
+              inputs:
+                deploymentName: 'PublishADF'
+                deploymentScope: 'Resource Group'
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                azureResourceManagerConnection: ${{ parameters.serviceConnection }}
+                templateLocation: 'Linked artifact'
+                location: '$(location)'
+                csmFile: '$(Pipeline.Workspace)/drop/${{ parameters.folderPath }}/ArmTemplate/ARMTemplateForFactory.json'
+                csmParametersFile: '$(Pipeline.Workspace)/drop/${{ parameters.folderPath }}/ArmTemplate/ARMTemplateForFactory-${{ parameters.environment }}.json'
+                deploymentMode: Incremental

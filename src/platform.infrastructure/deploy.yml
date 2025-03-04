@@ -1,0 +1,187 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: environmentLowerCase
+    default: ""
+
+jobs:
+## VIRTUAL NETWORK
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/networking-vnet.bicep"
+#      displayName: "Deploy Virtual Network"
+#      deploymentName: "DeployVirtualNetwork"
+#      dependsOn: []
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        virtualNetwork_name='$(databricksVnet_name)'
+#        virtualNetwork_cidr='$(vnet_cidr)'
+#        privateSubnet_cidr='$(privateSubnet_cidr)'
+#        publicSubnet_cidr='$(publicSubnet_cidr)'
+#        privateEndpointSubnet_cidr='$(privateEndpointSubnet_cidr)'
+#
+## BACKUP VAULT
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/backupVault.bicep"
+#      displayName: "Deploy Backup Vault"
+#      deploymentName: "DeployBackupVault"
+#      dependsOn: [DeployVirtualNetwork]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        name_prefix='$(name_prefix)'
+#
+# KEY VAULT
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/keyvault.bicep"
+      displayName: "Deploy Keyvault"
+      deploymentName: "DeployKeyvault"
+      dependsOn: [] #DeployVirtualNetwork
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        keyvault_name='$(keyvault_name)'
+
+# STORAGE ACCOUNT (DATALAKE)
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/storageAccount.bicep"
+      displayName: "Deploy ADLS Storage Account"
+      deploymentName: "DeployADLS"
+      dependsOn: [DeployKeyvault]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        name_prefix='$(name_prefix)'
+        storageaccount_name='$(storageAccountADLS_name)'
+        container_names='["test"]'
+        deploy_lifeCycleManagement=false
+        isHnsEnabled=true
+        deploy_BackupInstance=false
+#
+## STORAGE ACCOUNT (BACKUP)
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/storageAccount.bicep"
+#      displayName: "Deploy Backup Storage Account"
+#      deploymentName: "DeployBackupStorage"
+#      dependsOn: [DeployADLS]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        name_prefix='$(name_prefix)'
+#        storageaccount_name='$(storageAccountBackup_name)'
+#        container_names='["archive"]'
+#        deploy_lifeCycleManagement=false
+#        deploy_BackupInstance=true
+#
+## SQL SERVER
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/sqlServer.bicep"
+#      displayName: "Deploy SQL Server"
+#      deploymentName: "DeploySQLServer"
+#      dependsOn: [DeployBackupStorage]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        name_prefix='$(name_prefix)'
+#        adminLogin='$(adminLogin)'
+#        adminPassword='$(adminPassword)'
+
+# DATA FACTORY
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/datafactory.bicep"
+      displayName: "Deploy Data Factory"
+      deploymentName: "DeployDataFactory"
+      dependsOn: [DeployKeyvault] #[DeploySQLServer]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        keyvault_name='$(keyvault_name)'
+        datafactory_name='$(datafactory_name)'
+
+## NETWORK RULES
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/networking-rules.bicep"
+#      displayName: "Apply Networking Rules"
+#      deploymentName: "ApplyNetworkingRules"
+#      dependsOn: [DeployDataFactory]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        name_prefix='$(name_prefix)'
+#        centralVirtualNetwork_resourceGroup='$(vnet_resourceGroup)'
+#        centralVirtualNetwork_name='$(vnet_name)'
+#        virtualNetwork_name='$(databricksVnet_name)'
+#
+# DATABRICKS
+  - template: ../../core/yaml/bicep-deploy.yml
+    parameters:
+      templatePath: "../bicep/databricks.bicep"
+      displayName: "Deploy Databricks Workspace"
+      deploymentName: "DeployDatabricksWorkspace"
+      dependsOn: [ApplyNetworkingRules]
+      resourceGroupName: "$(resourceGroup_name)"
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      deploymentParameters:
+        name_prefix='$(name_prefix)'
+        virtualNetwork_name='$(databricksVnet_name)'
+
+
+## RBAC
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/platform-rbac.bicep"
+#      displayName: "Apply Role Assignments"
+#      deploymentName: "ApplyRoleAssignments"
+#      dependsOn: [DeployDatabricksWorkspace]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:
+#        name_prefix='$(name_prefix)'
+#        databricksAccessConnector_name='$(databricksAccessConnector_name)'
+
+# RESOURCE LOCK
+#  - template: ../../core/yaml/bicep-deploy.yml
+#    parameters:
+#      templatePath: "../bicep/resourceGroup-lock.bicep"
+#      displayName: "Apply Resource Group Lock"
+#      deploymentName: "ApplyResourceGroupLock"
+#      dependsOn: [ApplyRoleAssignments]
+#      resourceGroupName: "$(resourceGroup_name)"
+#      environment: "${{ parameters.environment }}"
+#      serviceConnection: "${{ parameters.serviceConnection }}"
+#      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+#      deploymentParameters:

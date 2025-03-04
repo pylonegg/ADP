@@ -1,0 +1,25 @@
+parameters:
+  - name: environment
+    default: ""
+  - name: environmentVariableGroup
+    default: ""
+  - name: agentPool
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: deploymentParameters
+    default: ""
+
+jobs:
+# Deploy Azure KeyVault   
+  - template: ../../core/yaml/datafactory-build.yml
+    parameters:
+      displayName: "Deploy DataFactory Artifacts"
+      deploymentName: "DeployDataFactoryArtifacts"
+      dependsOn: []
+      environment: "${{ parameters.environment }}"
+      serviceConnection: "${{ parameters.serviceConnection }}"
+      environmentVariableGroup: "${{ parameters.environmentVariableGroup }}"
+      dataFactoryName: "$(datafactory_name)"
+      resourceGroupName: "$(resourceGroup_name)"
+      folderPath: "src/azure.datafactory/app"
